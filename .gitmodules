@@ -1,0 +1,3 @@
+[submodule "Gemini-OAuth2-Api/api-common-utils"]
+	path = Gemini-OAuth2-Api/api-common-utils
+	url = git@github.com:kuretru/Api-Common-Utils.git
