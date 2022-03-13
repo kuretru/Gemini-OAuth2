@@ -1,5 +1,6 @@
 package com.kuretru.web.gemini.entity.data;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.kuretru.api.common.entity.data.BaseDO;
 import lombok.Data;
@@ -28,5 +29,8 @@ public class UserDO extends BaseDO {
     private String email;
 
     private String mobile;
+
+    @TableField("is_admin")
+    private Boolean admin;
 
 }
