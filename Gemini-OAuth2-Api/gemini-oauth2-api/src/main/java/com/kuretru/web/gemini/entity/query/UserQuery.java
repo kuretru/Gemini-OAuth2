@@ -1,5 +1,6 @@
 package com.kuretru.web.gemini.entity.query;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -15,5 +16,8 @@ public class UserQuery {
     private String email;
 
     private String mobile;
+
+    @JsonProperty("isAdmin")
+    private Boolean admin;
 
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * @author 呉真(kuretru) <kuretru@gmail.com>
@@ -16,10 +17,7 @@ import javax.validation.constraints.NotNull;
 public class UserLoginDTO {
 
     @NotNull
-    private String nickname;
-
-    @NotNull
-    private String avatar;
+    private UUID userId;
 
     @NotNull
     private AccessTokenDTO accessToken;
