@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 
 /**
  * @author 呉真(kuretru) <kuretru@gmail.com>
@@ -30,11 +29,5 @@ public class OAuthApplicationDTO extends BaseDTO {
 
     @NotNull
     private String callback;
-
-    @NotNull
-    private String clientId;
-
-    @NotNull
-    private Instant secretCreateTime;
 
 }

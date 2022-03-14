@@ -10,6 +10,8 @@ import lombok.ToString;
 import java.time.Instant;
 
 /**
+ * 用户表
+ *
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @Data
