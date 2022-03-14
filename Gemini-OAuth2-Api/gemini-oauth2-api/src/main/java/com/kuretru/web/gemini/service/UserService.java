@@ -21,4 +21,11 @@ public interface UserService extends BaseService<UserDTO, UserQuery> {
      */
     UserLoginDTO login(UserLoginQuery record) throws ServiceException;
 
+    /**
+     * 用户登出
+     *
+     * @throws ServiceException 未登录时会产生异常
+     */
+    void logout() throws ServiceException;
+
 }

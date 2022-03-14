@@ -1,5 +1,6 @@
 package com.kuretru.web.gemini.entity.transfer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kuretru.api.common.entity.transfer.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,5 +30,9 @@ public class UserDTO extends BaseDTO {
 
     @NotNull
     private String mobile;
+
+    @NotNull
+    @JsonProperty("isAdmin")
+    private Boolean admin;
 
 }
