@@ -6,6 +6,7 @@ import com.kuretru.api.common.entity.transfer.AccessTokenDTO;
 import com.kuretru.api.common.exception.ServiceException;
 import com.kuretru.api.common.manager.AccessTokenManager;
 import com.kuretru.api.common.service.impl.BaseServiceImpl;
+import com.kuretru.api.common.util.MobileUtils;
 import com.kuretru.web.gemini.entity.data.UserDO;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.query.UserQuery;
@@ -14,8 +15,10 @@ import com.kuretru.web.gemini.entity.transfer.UserLoginDTO;
 import com.kuretru.web.gemini.mapper.UserMapper;
 import com.kuretru.web.gemini.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -26,11 +29,13 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO, UserQuery> implements UserService {
 
+    private final PasswordEncoder passwordEncoder;
     private final AccessTokenManager accessTokenManager;
 
     @Autowired
-    public UserServiceImpl(UserMapper mapper, AccessTokenManager accessTokenManager) {
+    public UserServiceImpl(UserMapper mapper, PasswordEncoder passwordEncoder, AccessTokenManager accessTokenManager) {
         super(mapper, UserDO.class, UserDTO.class);
+        this.passwordEncoder = passwordEncoder;
         this.accessTokenManager = accessTokenManager;
     }
 
@@ -44,18 +49,30 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
             throw new ServiceException.Unauthorized(UserErrorCodes.WRONG_PASSWORD, "密码错误");
         }
 
+        userDO.setLastLogin(Instant.now());
+        mapper.updateById(userDO);
+
         Set<String> roles = buildRoles(userDO);
         AccessTokenDTO accessToken = accessTokenManager.generate(UUID.fromString(userDO.getUuid()), roles);
-        UserLoginDTO result = new UserLoginDTO();
-        result.setNickname(userDO.getNickname());
-        result.setAvatar(userDO.getAvatar());
-        result.setAccessToken(accessToken);
+        UserLoginDTO result = new UserLoginDTO(userDO.getNickname(), userDO.getAvatar(), accessToken);
         return result;
     }
 
     @Override
     public void logout() throws ServiceException {
 
+    }
+
+    @Override
+    public synchronized UserDTO save(UserDTO record) throws ServiceException {
+        return super.save(record);
+    }
+
+    @Override
+    protected UserDTO doToDto(UserDO record) {
+        UserDTO result = super.doToDto(record);
+        result.setMobile(MobileUtils.blurMobile(result.getMobile()));
+        return result;
     }
 
     private UserDO getByUsernameOrEmailOrMobile(String username) {
@@ -68,7 +85,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
     }
 
     private boolean verifyPassword(String password, UserDO record) {
-        return false;
+        return passwordEncoder.matches(password, record.getPassword());
     }
 
     private Set<String> buildRoles(UserDO userDO) {

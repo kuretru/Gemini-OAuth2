@@ -1,0 +1,20 @@
+### 登录
+POST http://127.0.0.1:7050/api/users/login
+Content-Type: application/json
+
+{
+  "username": "kuretru",
+  "password": "{{password}}"
+}
+
+> {%
+    client.global.set("access-token-id", response.body.data.accessToken.id);
+    client.global.set("access-token-secret", response.body.data.accessToken.secret);
+%}
+
+
+### 获取用户数据
+GET http://127.0.0.1:7050/api/users/{{userId}}
+Content-Type: application/json
+Access-Token-ID: {{access-token-id}}
+Access-Token: {{access-token-secret}}

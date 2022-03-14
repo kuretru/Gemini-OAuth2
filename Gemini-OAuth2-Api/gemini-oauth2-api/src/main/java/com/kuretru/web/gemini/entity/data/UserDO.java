@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.time.Instant;
+
 /**
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
@@ -16,20 +18,28 @@ import lombok.ToString;
 @TableName("user")
 public class UserDO extends BaseDO {
 
+    /** 用户名 */
     private String username;
 
+    /** 密码 */
     private String password;
 
-    private String salt;
-
+    /** 昵称 */
     private String nickname;
 
+    /** 头像URL */
     private String avatar;
 
+    /** 电子邮箱 */
     private String email;
 
+    /** 手机号码 */
     private String mobile;
 
+    /** 上一次登录的时间 */
+    private Instant lastLogin;
+
+    /** 是否是管理员 */
     @TableField("is_admin")
     private Boolean admin;
 
