@@ -1,4 +1,4 @@
-package com.kuretru.web.gemini.interceptor.service;
+package com.kuretru.web.gemini.service;
 
 import com.kuretru.api.common.exception.ServiceException;
 import com.kuretru.api.common.service.BaseService;

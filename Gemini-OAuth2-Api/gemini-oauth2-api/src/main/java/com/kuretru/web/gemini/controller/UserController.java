@@ -8,7 +8,7 @@ import com.kuretru.api.common.exception.ServiceException;
 import com.kuretru.web.gemini.annotaion.RequireAuthorization;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;
-import com.kuretru.web.gemini.interceptor.service.UserService;
+import com.kuretru.web.gemini.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
