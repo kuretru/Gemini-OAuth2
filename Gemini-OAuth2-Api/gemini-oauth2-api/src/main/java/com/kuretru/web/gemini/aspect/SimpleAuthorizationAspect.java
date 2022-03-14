@@ -1,13 +1,13 @@
 package com.kuretru.web.gemini.aspect;
 
 import com.kuretru.api.common.constant.code.UserErrorCodes;
+import com.kuretru.api.common.context.AccessTokenContext;
 import com.kuretru.api.common.entity.business.AccessTokenBO;
 import com.kuretru.api.common.entity.transfer.AccessTokenDTO;
 import com.kuretru.api.common.exception.ServiceException;
 import com.kuretru.api.common.manager.AccessTokenManager;
 import com.kuretru.web.gemini.annotaion.RequireAuthorization;
 import com.kuretru.web.gemini.constant.AccessTokenConstants;
-import com.kuretru.web.gemini.context.AccessTokenContext;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;

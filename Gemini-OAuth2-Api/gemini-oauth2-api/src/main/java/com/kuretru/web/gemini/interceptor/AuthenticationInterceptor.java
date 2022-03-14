@@ -1,8 +1,8 @@
 package com.kuretru.web.gemini.interceptor;
 
+import com.kuretru.api.common.context.AccessTokenContext;
 import com.kuretru.api.common.entity.transfer.AccessTokenDTO;
 import com.kuretru.web.gemini.constant.AccessTokenConstants;
-import com.kuretru.web.gemini.context.AccessTokenContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
