@@ -31,7 +31,8 @@ public class SimpleAuthorizationAspect {
         this.accessTokenManager = accessTokenManager;
     }
 
-    @Before("@annotation(requireAuthorization)")
+    @Before("@annotation(requireAuthorization) || " +
+            "(@target(requireAuthorization) && execution(com.kuretru.api.common.entity.ApiResponse *(..)))")
     public void before(JoinPoint joinPoint, RequireAuthorization requireAuthorization) throws ServiceException {
         AccessTokenDTO accessTokenDTO = getAccessTokenFromUser();
         AccessTokenBO accessTokenBO = getAccessTokenFromDatabase(accessTokenDTO.getId());

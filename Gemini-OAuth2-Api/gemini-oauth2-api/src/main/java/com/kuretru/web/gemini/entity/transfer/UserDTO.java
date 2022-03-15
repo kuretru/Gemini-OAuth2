@@ -26,12 +26,6 @@ public class UserDTO extends BaseDTO {
     private String avatar;
 
     @NotNull
-    private String email;
-
-    @NotNull
-    private String mobile;
-
-    @NotNull
     @JsonProperty("isAdmin")
     private Boolean admin;
 
