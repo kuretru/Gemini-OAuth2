@@ -46,9 +46,9 @@ const Login: React.FC = () => {
       if (response.code === 100) {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
-        localStorage.setItem('userId', response.data.userId);
-        localStorage.setItem('accessTokenId', response.data.accessToken.id);
-        localStorage.setItem('accessToken', response.data.accessToken.secret);
+        sessionStorage.setItem('userId', response.data.userId);
+        sessionStorage.setItem('accessTokenId', response.data.accessToken.id);
+        sessionStorage.setItem('accessToken', response.data.accessToken.secret);
 
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
