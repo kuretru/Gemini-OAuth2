@@ -6,7 +6,6 @@ import com.kuretru.api.common.entity.transfer.AccessTokenDTO;
 import com.kuretru.api.common.exception.ServiceException;
 import com.kuretru.api.common.manager.AccessTokenManager;
 import com.kuretru.api.common.service.impl.BaseServiceImpl;
-import com.kuretru.api.common.util.MobileUtils;
 import com.kuretru.web.gemini.entity.data.UserDO;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.query.UserQuery;
@@ -65,13 +64,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
     @Override
     public synchronized UserDTO save(UserDTO record) throws ServiceException {
         return super.save(record);
-    }
-
-    @Override
-    protected UserDTO doToDto(UserDO record) {
-        UserDTO result = super.doToDto(record);
-        result.setMobile(MobileUtils.blurMobile(result.getMobile()));
-        return result;
     }
 
     private UserDO getByUsernameOrEmailOrMobile(String username) {
