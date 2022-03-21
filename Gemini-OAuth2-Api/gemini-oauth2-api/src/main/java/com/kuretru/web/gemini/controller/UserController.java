@@ -2,6 +2,7 @@ package com.kuretru.web.gemini.controller;
 
 import com.kuretru.api.common.constant.EmptyConstants;
 import com.kuretru.api.common.constant.code.UserErrorCodes;
+import com.kuretru.api.common.context.AccessTokenContext;
 import com.kuretru.api.common.controller.BaseController;
 import com.kuretru.api.common.entity.ApiResponse;
 import com.kuretru.api.common.exception.ServiceException;
@@ -33,6 +34,9 @@ public class UserController extends BaseController {
     public ApiResponse<?> get(@PathVariable("id") UUID id) throws ServiceException {
         if (id == null || EmptyConstants.EMPTY_UUID.equals(id)) {
             throw new ServiceException.BadRequest(UserErrorCodes.REQUEST_PARAMETER_ERROR, "未指定ID或ID错误");
+        }
+        if (!id.equals(AccessTokenContext.getUserId())) {
+            throw new ServiceException.Forbidden(UserErrorCodes.REQUEST_PARAMETER_ERROR, "请勿操作别人的数据");
         }
         UserDTO result = service.get(id);
         if (null == result) {
