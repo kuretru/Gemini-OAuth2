@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author 呉真(kuretru) <kuretru@gmail.com>
@@ -16,18 +17,23 @@ import javax.validation.constraints.NotNull;
 public class OAuthApplicationDTO extends BaseDTO {
 
     @NotNull
+    @Size(max = 16)
     private String name;
 
     @NotNull
+    @Size(max = 128)
     private String avatar;
 
     @NotNull
+    @Size(max = 128)
     private String description;
 
     @NotNull
+    @Size(max = 64)
     private String homepage;
 
     @NotNull
+    @Size(max = 64)
     private String callback;
 
 }
