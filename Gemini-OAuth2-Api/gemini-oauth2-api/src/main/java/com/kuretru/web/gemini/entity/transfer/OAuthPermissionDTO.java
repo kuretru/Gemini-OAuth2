@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class OAuthPermissionDTO extends BaseDTO {
     @NotNull
     private UUID userId;
 
-    @NotNull
+    @NotEmpty
     private List<String> permissions;
 
 }
