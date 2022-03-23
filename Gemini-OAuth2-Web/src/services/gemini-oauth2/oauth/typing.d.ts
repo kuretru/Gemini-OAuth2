@@ -1,5 +1,5 @@
-declare namespace API.OAuth2 {
-  type OAuth2ApplicationDTO = API.BaseDTO & {
+declare namespace API.OAuth {
+  type OAuthApplicationDTO = API.BaseDTO & {
     name: string;
     avatar: string;
     description: string;
@@ -7,7 +7,7 @@ declare namespace API.OAuth2 {
     callback: number;
   };
 
-  type OAuth2ApplicationQuery = API.PaginationQuery & {
+  type OAuthApplicationQuery = API.PaginationQuery & {
     name?: string;
   };
 }

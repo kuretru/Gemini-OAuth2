@@ -28,8 +28,8 @@ export default [
     ],
   },
   {
-    path: '/oauth2/applications',
-    component: './oauth2/Application',
+    path: '/oauth/applications',
+    component: './oauth/Application',
     name: 'OAuth2应用管理',
     icon: 'appstore',
   },

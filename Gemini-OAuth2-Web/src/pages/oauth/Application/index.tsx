@@ -2,11 +2,11 @@ import React from 'react';
 import type { ProColumns } from '@ant-design/pro-table';
 import { ProFormText } from '@ant-design/pro-form';
 import { Image } from 'antd';
-import OAuth2ApplicationService from '@/services/gemini-oauth2/oauth2/application';
+import OAuthApplicationService from '@/services/gemini-oauth2/oauth/application';
 import BasePage from '@/components/BasePage';
 
-class OAuth2Application extends React.Component {
-  columns: ProColumns<API.OAuth2.OAuth2ApplicationDTO>[] = [
+class OAuthApplication extends React.Component {
+  columns: ProColumns<API.OAuth.OAuthApplicationDTO>[] = [
     {
       align: 'center',
       dataIndex: 'name',
@@ -77,9 +77,9 @@ class OAuth2Application extends React.Component {
 
   render() {
     return (
-      <BasePage<API.OAuth2.OAuth2ApplicationDTO, API.OAuth2.OAuth2ApplicationQuery>
+      <BasePage<API.OAuth.OAuthApplicationDTO, API.OAuth.OAuthApplicationQuery>
         pageName="OAuth2应用"
-        service={new OAuth2ApplicationService()}
+        service={new OAuthApplicationService()}
         columns={this.columns}
         formItem={this.formItem()}
       />
@@ -87,4 +87,4 @@ class OAuth2Application extends React.Component {
   }
 }
 
-export default OAuth2Application;
+export default OAuthApplication;
