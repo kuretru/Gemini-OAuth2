@@ -1,5 +1,5 @@
 ### 登录
-POST http://127.0.0.1:7050/api/users/login
+POST {{url}}/users/login
 Content-Type: application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type: application/json
 
 
 ### 获取用户数据
-GET http://127.0.0.1:7050/api/users/{{userId}}
+GET {{url}}/users/{{userId}}
 Content-Type: application/json
 Access-Token-ID: {{access-token-id}}
 Access-Token: {{access-token-secret}}

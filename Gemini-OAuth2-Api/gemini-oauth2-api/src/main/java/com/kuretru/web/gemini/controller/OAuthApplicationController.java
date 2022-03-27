@@ -1,6 +1,6 @@
 package com.kuretru.web.gemini.controller;
 
-import com.kuretru.api.common.controller.BaseRestController;
+import com.kuretru.microservices.web.controller.BaseRestController;
 import com.kuretru.web.gemini.annotaion.RequireAuthorization;
 import com.kuretru.web.gemini.entity.query.OAuthApplicationQuery;
 import com.kuretru.web.gemini.entity.transfer.OAuthApplicationDTO;

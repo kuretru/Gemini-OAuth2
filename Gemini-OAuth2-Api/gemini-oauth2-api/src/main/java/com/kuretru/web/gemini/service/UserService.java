@@ -1,7 +1,7 @@
 package com.kuretru.web.gemini.service;
 
-import com.kuretru.api.common.exception.ServiceException;
-import com.kuretru.api.common.service.BaseService;
+import com.kuretru.microservices.web.exception.ServiceException;
+import com.kuretru.microservices.web.service.BaseService;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.query.UserQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;

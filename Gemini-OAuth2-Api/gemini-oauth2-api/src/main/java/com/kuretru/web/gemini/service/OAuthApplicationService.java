@@ -1,6 +1,6 @@
 package com.kuretru.web.gemini.service;
 
-import com.kuretru.api.common.service.BaseService;
+import com.kuretru.microservices.web.service.BaseService;
 import com.kuretru.web.gemini.entity.query.OAuthApplicationQuery;
 import com.kuretru.web.gemini.entity.transfer.OAuthApplicationDTO;
 

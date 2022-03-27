@@ -1,7 +1,7 @@
 package com.kuretru.web.gemini.manager;
 
-import com.kuretru.api.common.entity.transfer.OAuth2AccessTokenDTO;
-import com.kuretru.api.common.exception.OAuth2Exception;
+import com.kuretru.microservices.oauth2.common.entity.OAuth2AccessTokenDTO;
+import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
 import com.kuretru.web.gemini.entity.business.OAuth2AccessTokenBO;
 
 import java.util.UUID;
