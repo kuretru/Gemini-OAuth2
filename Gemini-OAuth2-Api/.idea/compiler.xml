@@ -7,22 +7,31 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="galaxy-common" />
+        <module name="galaxy-oauth2-common" />
+        <module name="galaxy-web" />
         <module name="gemini-oauth2-api" />
-        <module name="api-common-utils" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="api-common-utils" target="17" />
+      <module name="galaxy-common" target="17" />
+      <module name="galaxy-oauth2-common" target="17" />
+      <module name="galaxy-web" target="17" />
       <module name="gemini-oatuh2-api" target="17" />
       <module name="gemini-oauth2-api" target="17" />
-      <module name="gemini-oauth2-parent" target="1.5" />
+      <module name="gemini-oauth2-parent" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-common-utils" options="-parameters" />
+      <module name="galaxy-common" options="-parameters" />
+      <module name="galaxy-oauth2-common" options="-parameters" />
+      <module name="galaxy-web" options="-parameters" />
       <module name="gemini-oatuh2-api" options="-parameters" />
       <module name="gemini-oauth2-api" options="-parameters" />
+      <module name="gemini-oauth2-parent" options="-parameters" />
     </option>
   </component>
 </project>

@@ -6,12 +6,14 @@
     <groupId>com.kuretru.web</groupId>
     <artifactId>gemini-oauth2-parent</artifactId>
     <version>1.0.0</version>
-    <name>Gemini-OAuth2-Parent</name>
+    <name>gemini-oauth2-parent</name>
     <description>双子身份验证中心-后端API-父项目</description>
     <packaging>pom</packaging>
 
     <modules>
-        <module>api-common-utils</module>
+        <module>../Galaxy-Microservices/galaxy-common</module>
+        <module>../Galaxy-Microservices/galaxy-web</module>
+        <module>../Galaxy-Microservices/galaxy-oauth2-common</module>
         <module>gemini-oauth2-api</module>
     </modules>
 
