@@ -1,11 +1,11 @@
 package com.kuretru.web.gemini.aspect;
 
-import com.kuretru.api.common.constant.code.UserErrorCodes;
-import com.kuretru.api.common.context.AccessTokenContext;
-import com.kuretru.api.common.entity.business.AccessTokenBO;
-import com.kuretru.api.common.entity.transfer.AccessTokenDTO;
-import com.kuretru.api.common.exception.ServiceException;
-import com.kuretru.api.common.manager.AccessTokenManager;
+import com.kuretru.microservices.web.constant.code.UserErrorCodes;
+import com.kuretru.microservices.web.context.AccessTokenContext;
+import com.kuretru.microservices.web.entity.business.AccessTokenBO;
+import com.kuretru.microservices.web.entity.transfer.AccessTokenDTO;
+import com.kuretru.microservices.web.exception.ServiceException;
+import com.kuretru.microservices.web.manager.AccessTokenManager;
 import com.kuretru.web.gemini.annotaion.RequireAuthorization;
 import com.kuretru.web.gemini.constant.AccessTokenConstants;
 import org.aspectj.lang.JoinPoint;
@@ -44,7 +44,7 @@ public class SimpleAuthorizationAspect {
 
     protected void authentication(AccessTokenDTO dto, AccessTokenBO bo) throws ServiceException {
         if (!bo.getSecret().equals(dto.getSecret())) {
-            throw new ServiceException.Unauthorized(UserErrorCodes.USER_LOGIN_ERROR, "AccessToken不匹配");
+            throw ServiceException.build(UserErrorCodes.USER_LOGIN_ERROR, "AccessToken不匹配");
         }
     }
 
@@ -63,11 +63,11 @@ public class SimpleAuthorizationAspect {
                     return;
                 }
             }
-            throw new ServiceException.Unauthorized(UserErrorCodes.ACCESS_PERMISSION_ERROR, "用户缺少权限");
+            throw ServiceException.build(UserErrorCodes.ACCESS_PERMISSION_ERROR, "用户缺少权限");
         } else {
             for (String role : requireAuthorization.hasRoles()) {
                 if (!roles.contains(role)) {
-                    throw new ServiceException.Unauthorized(UserErrorCodes.ACCESS_PERMISSION_ERROR, "用户缺少权限");
+                    throw ServiceException.build(UserErrorCodes.ACCESS_PERMISSION_ERROR, "用户缺少权限");
                 }
             }
         }
@@ -76,12 +76,12 @@ public class SimpleAuthorizationAspect {
     private AccessTokenDTO getAccessTokenFromUser() throws ServiceException {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes == null) {
-            throw new ServiceException.Unauthorized(UserErrorCodes.USER_LOGIN_ERROR, "无法获得AccessToken");
+            throw ServiceException.build(UserErrorCodes.USER_LOGIN_ERROR, "无法获得AccessToken");
         }
         HttpServletRequest request = servletRequestAttributes.getRequest();
         AccessTokenDTO accessTokenDTO = (AccessTokenDTO)request.getAttribute(AccessTokenConstants.ACCESS_TOKEN_ATTRIBUTE);
         if (accessTokenDTO == null) {
-            throw new ServiceException.Unauthorized(UserErrorCodes.USER_LOGIN_ERROR, "请求头未携带AccessToken");
+            throw ServiceException.build(UserErrorCodes.USER_LOGIN_ERROR, "请求头未携带AccessToken");
         }
         request.removeAttribute(AccessTokenConstants.ACCESS_TOKEN_ATTRIBUTE);
         return accessTokenDTO;

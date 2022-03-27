@@ -1,6 +1,6 @@
 package com.kuretru.web.gemini.filter;
 
-import com.kuretru.api.common.wrapper.RequestParamSnakeCaseToCamelCaseRequestWrapper;
+import com.kuretru.microservices.web.wrapper.RequestParamSnakeCaseToCamelCaseRequestWrapper;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;

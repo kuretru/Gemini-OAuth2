@@ -1,9 +1,9 @@
 package com.kuretru.web.gemini.manager.impl;
 
-import com.kuretru.api.common.entity.enums.OAuth2ErrorEnum;
-import com.kuretru.api.common.entity.transfer.OAuth2AccessTokenDTO;
-import com.kuretru.api.common.exception.OAuth2Exception;
-import com.kuretru.api.common.util.StringUtils;
+import com.kuretru.microservices.common.utils.StringUtils;
+import com.kuretru.microservices.oauth2.common.entity.OAuth2AccessTokenDTO;
+import com.kuretru.microservices.oauth2.common.entity.OAuth2ErrorEnum;
+import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
 import com.kuretru.web.gemini.constant.OAuth2Constants;
 import com.kuretru.web.gemini.entity.business.OAuth2AccessTokenBO;
 import com.kuretru.web.gemini.entity.data.OAuth2AccessTokenDO;

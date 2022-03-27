@@ -1,7 +1,7 @@
 package com.kuretru.web.gemini.configuration;
 
-import com.kuretru.api.common.manager.AccessTokenManager;
-import com.kuretru.api.common.manager.impl.InMemoryTokenAccessManagerImpl;
+import com.kuretru.microservices.web.manager.AccessTokenManager;
+import com.kuretru.microservices.web.manager.impl.InMemoryTokenAccessManagerImpl;
 import com.kuretru.web.gemini.aspect.SimpleAuthorizationAspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

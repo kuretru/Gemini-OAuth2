@@ -1,11 +1,11 @@
 package com.kuretru.web.gemini.controller;
 
-import com.kuretru.api.common.constant.EmptyConstants;
-import com.kuretru.api.common.constant.code.UserErrorCodes;
-import com.kuretru.api.common.context.AccessTokenContext;
-import com.kuretru.api.common.controller.BaseController;
-import com.kuretru.api.common.entity.ApiResponse;
-import com.kuretru.api.common.exception.ServiceException;
+import com.kuretru.microservices.web.constant.EmptyConstants;
+import com.kuretru.microservices.web.constant.code.UserErrorCodes;
+import com.kuretru.microservices.web.context.AccessTokenContext;
+import com.kuretru.microservices.web.controller.BaseController;
+import com.kuretru.microservices.web.entity.ApiResponse;
+import com.kuretru.microservices.web.exception.ServiceException;
 import com.kuretru.web.gemini.annotaion.RequireAuthorization;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;
@@ -33,14 +33,14 @@ public class UserController extends BaseController {
     @RequireAuthorization
     public ApiResponse<?> get(@PathVariable("id") UUID id) throws ServiceException {
         if (id == null || EmptyConstants.EMPTY_UUID.equals(id)) {
-            throw new ServiceException.BadRequest(UserErrorCodes.REQUEST_PARAMETER_ERROR, "未指定ID或ID错误");
+            throw ServiceException.build(UserErrorCodes.REQUEST_PARAMETER_ERROR, "未指定ID或ID错误");
         }
         if (!id.equals(AccessTokenContext.getUserId())) {
-            throw new ServiceException.Forbidden(UserErrorCodes.REQUEST_PARAMETER_ERROR, "请勿操作别人的数据");
+            throw ServiceException.build(UserErrorCodes.REQUEST_PARAMETER_ERROR, "请勿操作别人的数据");
         }
         UserDTO result = service.get(id);
         if (null == result) {
-            throw new ServiceException.NotFound(UserErrorCodes.REQUEST_PARAMETER_ERROR, "指定资源不存在");
+            throw ServiceException.build(UserErrorCodes.REQUEST_PARAMETER_ERROR, "指定资源不存在");
         }
         return ApiResponse.success(result);
     }
