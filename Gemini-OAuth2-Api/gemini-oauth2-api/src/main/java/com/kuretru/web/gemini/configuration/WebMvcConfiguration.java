@@ -1,6 +1,6 @@
 package com.kuretru.web.gemini.configuration;
 
-import com.kuretru.web.gemini.interceptor.AuthenticationInterceptor;
+import com.kuretru.microservices.authentication.interceptor.AuthenticationInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

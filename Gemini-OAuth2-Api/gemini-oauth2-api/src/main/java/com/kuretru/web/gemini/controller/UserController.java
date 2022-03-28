@@ -1,12 +1,12 @@
 package com.kuretru.web.gemini.controller;
 
+import com.kuretru.microservices.authentication.annotaion.RequireAuthorization;
+import com.kuretru.microservices.authentication.context.AccessTokenContext;
 import com.kuretru.microservices.web.constant.EmptyConstants;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
-import com.kuretru.microservices.web.context.AccessTokenContext;
 import com.kuretru.microservices.web.controller.BaseController;
 import com.kuretru.microservices.web.entity.ApiResponse;
 import com.kuretru.microservices.web.exception.ServiceException;
-import com.kuretru.web.gemini.annotaion.RequireAuthorization;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;
 import com.kuretru.web.gemini.service.UserService;
