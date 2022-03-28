@@ -1,10 +1,10 @@
 package com.kuretru.web.gemini.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.kuretru.microservices.authentication.entity.AccessTokenDTO;
+import com.kuretru.microservices.authentication.manager.AccessTokenManager;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
-import com.kuretru.microservices.web.entity.transfer.AccessTokenDTO;
 import com.kuretru.microservices.web.exception.ServiceException;
-import com.kuretru.microservices.web.manager.AccessTokenManager;
 import com.kuretru.microservices.web.service.impl.BaseServiceImpl;
 import com.kuretru.web.gemini.entity.data.UserDO;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;

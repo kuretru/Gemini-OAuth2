@@ -1,6 +1,6 @@
 package com.kuretru.web.gemini.entity.transfer;
 
-import com.kuretru.microservices.web.entity.transfer.AccessTokenDTO;
+import com.kuretru.microservices.authentication.entity.AccessTokenDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
