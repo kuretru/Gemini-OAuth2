@@ -5,6 +5,7 @@ import com.kuretru.microservices.oauth2.common.constant.OAuth2Constants;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2AccessTokenDTO;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2AuthorizeDTO;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2ErrorEnum;
+import com.kuretru.microservices.oauth2.common.entity.OAuth2Triple;
 import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
 import com.kuretru.microservices.oauth2.server.manager.OAuth2AccessTokenManager;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
@@ -46,7 +47,9 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
     private final RedisTemplate<String, Serializable> serializableRedisTemplate;
 
     @Autowired
-    public OAuth2ServerManagerImpl(OAuthApplicationService applicationService, OAuthPermissionService permissionService, OAuth2AccessTokenManager accessTokenManager, RedisTemplate<String, String> stringRedisTemplate, RedisTemplate<String, Serializable> serializableRedisTemplate) {
+    public OAuth2ServerManagerImpl(OAuthApplicationService applicationService, OAuthPermissionService permissionService,
+                                   OAuth2AccessTokenManager accessTokenManager,
+                                   RedisTemplate<String, String> stringRedisTemplate, RedisTemplate<String, Serializable> serializableRedisTemplate) {
         this.applicationService = applicationService;
         this.permissionService = permissionService;
         this.accessTokenManager = accessTokenManager;
@@ -113,7 +116,27 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
 
     @Override
     public OAuth2AccessTokenDTO.Response accessToken(OAuth2AccessTokenDTO.Request request) throws OAuth2Exception {
-        return null;
+        if (!OAuth2Constants.ACCESS_TOKEN_REQUEST_GRANT_TYPE.equals(request.getGrantType())) {
+            throw new OAuth2Exception(OAuth2ErrorEnum.AccessTokenError.UNSUPPORTED_GRANT_TYPE, "服务端仅支持认证码方式");
+        } else if (Boolean.FALSE.equals(serializableRedisTemplate.hasKey(REDIS_CODE_KEY + request.getCode()))) {
+            throw new OAuth2Exception(OAuth2ErrorEnum.AccessTokenError.UNAUTHORIZED_CLIENT, "授权请求已过期");
+        }
+
+        OAuth2ApprovedDO approvedDO = (OAuth2ApprovedDO)serializableRedisTemplate.opsForValue().getAndDelete(REDIS_CODE_KEY + request.getCode());
+        assert approvedDO != null;
+        if (!approvedDO.getRedirectUri().equals(request.getRedirectUri())) {
+            throw new OAuth2Exception(OAuth2ErrorEnum.AccessTokenError.INVALID_REQUEST, "重定向地址不匹配");
+        } else if (!approvedDO.getClientId().equals(request.getClientId())) {
+            throw new OAuth2Exception(OAuth2ErrorEnum.AccessTokenError.INVALID_CLIENT, "客户端ID不匹配");
+        }
+
+        OAuthApplicationDTO applicationDTO = applicationService.getByClientId(approvedDO.getClientId());
+        if (!request.getClientSecret().equals(applicationService.getClientSecret(request.getClientId()))) {
+            throw new OAuth2Exception(OAuth2ErrorEnum.AccessTokenError.INVALID_GRANT, "客户端密钥不匹配");
+        }
+
+        OAuth2Triple triple = new OAuth2Triple(applicationDTO.getId(), approvedDO.getUserId(), approvedDO.getScopes());
+        return accessTokenManager.generate(triple);
     }
 
     /**
@@ -151,7 +174,7 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
 
         assert request != null;
         String redirectUri = request.getRedirectUri();
-        OAuth2ApprovedDO approvedDO = new OAuth2ApprovedDO(redirectUri, request.getClientId(), record.getUserId());
+        OAuth2ApprovedDO approvedDO = new OAuth2ApprovedDO(redirectUri, request.getClientId(), record.getUserId(), record.getScopes());
         String code = StringUtils.randomUUID();
         while (Boolean.TRUE.equals(serializableRedisTemplate.hasKey(REDIS_CODE_KEY + code))) {
             code = StringUtils.randomUUID();

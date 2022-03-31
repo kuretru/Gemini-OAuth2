@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/../Galaxy-Microservices/galaxy-web/pom.xml" />
         <option value="$PROJECT_DIR$/../Galaxy-Microservices/galaxy-oauth2-common/pom.xml" />
         <option value="$PROJECT_DIR$/../Galaxy-Microservices/galaxy-authentication/pom.xml" />
+        <option value="$PROJECT_DIR$/../Galaxy-Microservices/galaxy-oauth2-server/pom.xml" />
       </list>
     </option>
   </component>

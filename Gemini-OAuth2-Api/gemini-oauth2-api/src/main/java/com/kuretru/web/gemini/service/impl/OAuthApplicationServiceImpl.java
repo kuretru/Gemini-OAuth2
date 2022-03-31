@@ -31,6 +31,14 @@ public class OAuthApplicationServiceImpl extends BaseServiceImpl<OAuthApplicatio
     }
 
     @Override
+    public String getClientSecret(String clientId) {
+        QueryWrapper<OAuthApplicationDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("client_id", clientId);
+        OAuthApplicationDO record = mapper.selectOne(queryWrapper);
+        return record.getClientSecret();
+    }
+
+    @Override
     public boolean verifyRedirectUri(OAuthApplicationDTO record, String redirectUri) {
         if (StringUtils.hasText(redirectUri)) {
             // TODO 完整的校验逻辑

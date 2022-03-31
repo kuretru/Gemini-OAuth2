@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -20,5 +21,7 @@ public class OAuth2ApprovedDO implements Serializable {
     private String clientId;
 
     private UUID userId;
+
+    private Set<String> scopes;
 
 }
