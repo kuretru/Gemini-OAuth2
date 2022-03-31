@@ -1,5 +1,6 @@
 package com.kuretru.web.gemini.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kuretru.microservices.web.service.impl.BaseServiceImpl;
 import com.kuretru.web.gemini.entity.data.OAuthApplicationDO;
 import com.kuretru.web.gemini.entity.query.OAuthApplicationQuery;
@@ -19,6 +20,14 @@ public class OAuthApplicationServiceImpl extends BaseServiceImpl<OAuthApplicatio
     @Autowired
     public OAuthApplicationServiceImpl(OAuthApplicationMapper mapper) {
         super(mapper, OAuthApplicationDO.class, OAuthApplicationDTO.class);
+    }
+
+    @Override
+    public OAuthApplicationDTO getByClientId(String clientId) {
+        QueryWrapper<OAuthApplicationDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("client_id", clientId);
+        OAuthApplicationDO record = mapper.selectOne(queryWrapper);
+        return doToDto(record);
     }
 
     @Override

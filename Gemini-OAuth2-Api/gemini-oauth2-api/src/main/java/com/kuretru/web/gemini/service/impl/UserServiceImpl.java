@@ -52,8 +52,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
         mapper.updateById(userDO);
 
         Set<String> roles = buildRoles(userDO);
-        AccessTokenDTO accessToken = accessTokenManager.generate(UUID.fromString(userDO.getUuid()), roles);
-        return new UserLoginDTO(UUID.fromString(userDO.getUuid()), accessToken);
+        UUID userId = UUID.fromString(userDO.getUuid());
+        AccessTokenDTO accessToken = accessTokenManager.generate(userId, roles);
+        return new UserLoginDTO(userId, accessToken);
     }
 
     @Override

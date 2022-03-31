@@ -36,7 +36,7 @@
 
         <dependency>
             <groupId>com.kuretru.microservices</groupId>
-            <artifactId>galaxy-oauth2-common</artifactId>
+            <artifactId>galaxy-oauth2-server</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

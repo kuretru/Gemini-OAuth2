@@ -1,5 +1,6 @@
 package com.kuretru.web.gemini.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kuretru.microservices.common.utils.StringUtils;
 import com.kuretru.microservices.web.service.impl.BaseServiceImpl;
 import com.kuretru.web.gemini.entity.data.OAuthPermissionDO;
@@ -26,6 +27,15 @@ public class OAuthPermissionServiceImpl extends BaseServiceImpl<OAuthPermissionM
     }
 
     @Override
+    public OAuthPermissionDTO get(UUID applicationId, UUID userId) {
+        QueryWrapper<OAuthPermissionDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("application_id", applicationId.toString());
+        queryWrapper.eq("user_id", userId.toString());
+        OAuthPermissionDO record = mapper.selectOne(queryWrapper);
+        return doToDto(record);
+    }
+
+    @Override
     protected OAuthPermissionDTO doToDto(OAuthPermissionDO record) {
         if (record == null) {
             return null;
@@ -33,7 +43,7 @@ public class OAuthPermissionServiceImpl extends BaseServiceImpl<OAuthPermissionM
         OAuthPermissionDTO result = super.doToDto(record);
         result.setApplicationId(UUID.fromString(record.getApplicationId()));
         result.setUserId(UUID.fromString(record.getUserId()));
-        result.setPermissions(StringUtils.stringToList(record.getPermissions(), PERMISSIONS_SEPARATOR));
+        result.setPermissions(StringUtils.stringToSet(record.getPermissions(), PERMISSIONS_SEPARATOR));
         return result;
     }
 
