@@ -13,12 +13,12 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OAuth2AccessTokenDO implements Serializable {
+public class OAuth2ApprovedDO implements Serializable {
+
+    private String redirectUri;
+
+    private String clientId;
 
     private UUID userId;
-
-    private String refreshToken;
-
-    private String scope;
 
 }

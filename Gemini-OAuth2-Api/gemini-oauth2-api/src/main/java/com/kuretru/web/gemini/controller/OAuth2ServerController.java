@@ -1,13 +1,14 @@
 package com.kuretru.web.gemini.controller;
 
+import com.kuretru.microservices.authentication.annotaion.RequireAuthorization;
 import com.kuretru.microservices.authentication.context.AccessTokenContext;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2AccessTokenDTO;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2AuthorizeDTO;
-import com.kuretru.microservices.oauth2.common.entity.OAuth2ErrorEnum;
 import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
 import com.kuretru.microservices.web.constant.code.ServiceErrorCodes;
 import com.kuretru.microservices.web.controller.BaseController;
 import com.kuretru.microservices.web.exception.ServiceException;
+import com.kuretru.web.gemini.entity.query.OAuth2ApproveQuery;
 import com.kuretru.web.gemini.entity.transfer.OAuth2ApproveDTO;
 import com.kuretru.web.gemini.manager.OAuth2ServerManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,18 +37,33 @@ public class OAuth2ServerController extends BaseController {
      * 异常应重定向回Application服务器
      *
      * @param request Request
-     * @throws OAuth2Exception OAuth2异常
+     * @throws IOException 重定向失败时，引发IO异常
      */
     @GetMapping("/authorize")
-    public void authorize(@Validated OAuth2AuthorizeDTO.Request request) throws OAuth2Exception {
-        OAuth2ApproveDTO.Response result = manager.authorize(request);
-        //TODO 待重构
-        String url = String.format("/oauth2/approve?application_id=%s&token=%s&scope=%s",
-                result.getApplicationId(), result.getToken(), result.getScope());
+    public void authorize(@Validated OAuth2AuthorizeDTO.Request request) throws IOException {
         try {
-            response.sendRedirect(url);
+            String redirectUrl = manager.authorize(request);
+            response.sendRedirect(redirectUrl);
+        } catch (OAuth2Exception e) {
+            String redirectUrl = e.toRedirectUrl();
+            response.sendRedirect(redirectUrl);
+        }
+    }
+
+    /**
+     * 前端查询用户是否已授权过，若已授权则直接重定向回Application服务器
+     *
+     * @param query 请求实体
+     * @throws ServiceException 若未授权，则抛出异常，前端应提示用户授权
+     */
+    @GetMapping("/approve")
+    public void isApproved(@Validated OAuth2ApproveQuery query) throws ServiceException {
+        query.setUserId(AccessTokenContext.getUserId());
+        String redirectUrl = manager.isApproved(query);
+        try {
+            response.sendRedirect(redirectUrl);
         } catch (IOException e) {
-            throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.SERVER_ERROR, "服务端未能重定向");
+            throw ServiceException.build(ServiceErrorCodes.SYSTEM_EXECUTION_ERROR, "重定向失败");
         }
     }
 
@@ -56,18 +72,19 @@ public class OAuth2ServerController extends BaseController {
      * Response应重定向回Application服务器
      * 异常应重定向回Application服务器
      *
-     * @param request Request
-     * @throws ServiceException OAuth2异常
+     * @param request 请求实体
+     * @throws IOException 重定向失败时，引发IO异常
      */
     @PostMapping("/approve")
-    public void approve(@Validated @RequestBody OAuth2ApproveDTO.Request request) throws ServiceException {
+    @RequireAuthorization
+    public void approve(@Validated @RequestBody OAuth2ApproveDTO.Request request) throws IOException {
         request.setUserId(AccessTokenContext.getUserId());
-        OAuth2AuthorizeDTO.Response result = manager.approve(request);
-        String url = String.format("%s?code=%s&state=%s", result.getCallback(), result.getCode(), result.getState());
         try {
-            response.sendRedirect(url);
-        } catch (IOException e) {
-            throw ServiceException.build(ServiceErrorCodes.SYSTEM_EXECUTION_ERROR, "服务端未能重定向");
+            String redirectUrl = manager.approve(request);
+            response.sendRedirect(redirectUrl);
+        } catch (OAuth2Exception e) {
+            String redirectUrl = e.toRedirectUrl();
+            response.sendRedirect(redirectUrl);
         }
     }
 

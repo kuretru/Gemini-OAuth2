@@ -1,24 +1,29 @@
 package com.kuretru.web.gemini.manager.impl;
 
 import com.kuretru.microservices.common.utils.StringUtils;
+import com.kuretru.microservices.oauth2.common.constant.OAuth2Constants;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2AccessTokenDTO;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2AuthorizeDTO;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2ErrorEnum;
 import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
+import com.kuretru.microservices.oauth2.server.manager.OAuth2AccessTokenManager;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
 import com.kuretru.microservices.web.exception.ServiceException;
-import com.kuretru.web.gemini.constant.OAuth2Constants;
+import com.kuretru.web.gemini.entity.data.OAuth2ApprovedDO;
+import com.kuretru.web.gemini.entity.query.OAuth2ApproveQuery;
 import com.kuretru.web.gemini.entity.transfer.OAuth2ApproveDTO;
 import com.kuretru.web.gemini.entity.transfer.OAuthApplicationDTO;
+import com.kuretru.web.gemini.entity.transfer.OAuthPermissionDTO;
 import com.kuretru.web.gemini.manager.OAuth2ServerManager;
 import com.kuretru.web.gemini.service.OAuthApplicationService;
+import com.kuretru.web.gemini.service.OAuthPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.time.Duration;
-import java.util.UUID;
+import java.util.Set;
 
 /**
  * @author 呉真(kuretru) <kuretru@gmail.com>
@@ -27,66 +32,137 @@ import java.util.UUID;
 public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
 
     private static final String REDIS_ROOT_KEY = "OAuth2ServerManager.";
-    private static final String REDIS_STATE_UNIQUE_KEY = REDIS_ROOT_KEY + "state.";
-    private static final String REDIS_AUTHORIZE_KEY = REDIS_ROOT_KEY + "authorize.";
+    private static final String REDIS_STATE_STATE_KEY = REDIS_ROOT_KEY + "state.";
+    private static final String REDIS_TOKEN_KEY = REDIS_ROOT_KEY + "token.";
+    private static final String REDIS_CODE_KEY = REDIS_ROOT_KEY + "code.";
     private static final Duration AUTHORIZE_EXPIRE_TIME = Duration.ofMinutes(15);
+
+    private static final String APPROVE_URL = "/oauth/approve";
+
     private final OAuthApplicationService applicationService;
+    private final OAuthPermissionService permissionService;
+    private final OAuth2AccessTokenManager accessTokenManager;
     private final RedisTemplate<String, String> stringRedisTemplate;
     private final RedisTemplate<String, Serializable> serializableRedisTemplate;
 
     @Autowired
-    public OAuth2ServerManagerImpl(OAuthApplicationService applicationService, RedisTemplate<String, String> stringRedisTemplate,
-                                   RedisTemplate<String, Serializable> serializableRedisTemplate) {
+    public OAuth2ServerManagerImpl(OAuthApplicationService applicationService, OAuthPermissionService permissionService, OAuth2AccessTokenManager accessTokenManager, RedisTemplate<String, String> stringRedisTemplate, RedisTemplate<String, Serializable> serializableRedisTemplate) {
         this.applicationService = applicationService;
+        this.permissionService = permissionService;
+        this.accessTokenManager = accessTokenManager;
         this.stringRedisTemplate = stringRedisTemplate;
         this.serializableRedisTemplate = serializableRedisTemplate;
     }
 
+
     @Override
-    public OAuth2ApproveDTO.Response authorize(OAuth2AuthorizeDTO.Request request) throws OAuth2Exception {
-        // 判断State是否重复使用
-        if (!OAuth2Constants.AUTHORIZATION_CODE_GRANT.equals(request.getResponseType())) {
+    public String authorize(OAuth2AuthorizeDTO.Request record) throws OAuth2Exception {
+        // 判断ResponseType是否合法
+        if (!OAuth2Constants.AUTHORIZATION_REQUEST_RESPONSE_TYPE.equals(record.getResponseType())) {
             throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.UNSUPPORTED_RESPONSE_TYPE, "服务端仅支持授权码认证模式");
         }
-        String stateKey = REDIS_STATE_UNIQUE_KEY + request.getState();
+
+        // 判断State是否重复使用
+        String stateKey = REDIS_STATE_STATE_KEY + record.getState();
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(stateKey))) {
             throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.INVALID_REQUEST, "重复使用的State字段");
         }
-        stringRedisTemplate.opsForValue().set(stateKey, request.getState(), AUTHORIZE_EXPIRE_TIME);
+        stringRedisTemplate.opsForValue().set(stateKey, record.getState(), AUTHORIZE_EXPIRE_TIME);
 
         // 判断ClientID是否合法
-        OAuthApplicationDTO applicationDTO = applicationService.get(UUID.fromString(request.getClientId()));
+        OAuthApplicationDTO applicationDTO = applicationService.getByClientId(record.getClientId());
         if (applicationDTO == null) {
             throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.INVALID_REQUEST, "指定的Client ID不存在");
         }
-        if (!applicationService.verifyRedirectUri(applicationDTO, request.getRedirectUri())) {
+
+        // 判断RedirectUri是否合法
+        if (!applicationService.verifyRedirectUri(applicationDTO, record.getRedirectUri())) {
             throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.INVALID_REQUEST, "redirect_uri不在预留信息的子集中");
         }
 
-        // 向前端返回一次性Token
+        // 生成返回给前端的Token
         String token = StringUtils.randomUUID();
-        serializableRedisTemplate.opsForValue().set(REDIS_AUTHORIZE_KEY + token, request, AUTHORIZE_EXPIRE_TIME);
-        return new OAuth2ApproveDTO.Response(applicationDTO.getId(), token, request.getScope());
+        serializableRedisTemplate.opsForValue().set(REDIS_TOKEN_KEY + token, record, AUTHORIZE_EXPIRE_TIME);
+
+        return APPROVE_URL + "?token=" + token + "&application_id=" + applicationDTO.getId() + "&scope=" + record.getScope();
     }
 
     @Override
-    public OAuth2AuthorizeDTO.Response approve(OAuth2ApproveDTO.Request request) throws ServiceException {
-        String key = REDIS_AUTHORIZE_KEY + request.getToken();
-        if (Boolean.FALSE.equals(serializableRedisTemplate.hasKey(key))) {
-            throw ServiceException.build(UserErrorCodes.REQUEST_PARAMETER_ERROR, "指定的Token已过期");
+    public String isApproved(OAuth2ApproveQuery query) throws ServiceException {
+        OAuthPermissionDTO permissionDTO = permissionService.get(query.getApplicationId(), query.getUserId());
+        if (permissionDTO != null) {
+            Set<String> scopes = query.getScopes();
+            if (permissionDTO.getPermissions().containsAll(scopes)) {
+                try {
+                    return authorized(query, true);
+                } catch (OAuth2Exception e) {
+                    throw ServiceException.build(UserErrorCodes.ACCESS_UNAUTHORIZED, e.getMessage());
+                }
+            }
         }
-        OAuth2AuthorizeDTO.Request authorizeDTO = (OAuth2AuthorizeDTO.Request)serializableRedisTemplate.opsForValue().getAndDelete(key);
+        throw ServiceException.build(UserErrorCodes.ACCESS_UNAUTHORIZED, "用户尚未授权");
+    }
 
-        if (OAuth2ApproveDTO.Action.REJECT.equals(request.getAction())) {
-//            throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.ACCESS_DENIED, "用户拒绝授权");
+    @Override
+    public String approve(OAuth2ApproveDTO.Request record) throws OAuth2Exception {
+        if (OAuth2ApproveDTO.Action.APPROVE.equals(record.getAction())) {
+            return authorized(record, false);
         }
-
-        return null;
+        throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.ACCESS_DENIED, "用户拒绝授权");
     }
 
     @Override
     public OAuth2AccessTokenDTO.Response accessToken(OAuth2AccessTokenDTO.Request request) throws OAuth2Exception {
         return null;
+    }
+
+    /**
+     * 进行授权操作
+     *
+     * @param record            参数实体
+     * @param alreadyAuthorized 是否已授权
+     * @return 重定向至应用的URL
+     */
+    private String authorized(OAuth2ApproveQuery record, boolean alreadyAuthorized) throws OAuth2Exception {
+        String tokenKey = REDIS_TOKEN_KEY + record.getToken();
+        if (Boolean.FALSE.equals(serializableRedisTemplate.hasKey(tokenKey))) {
+            throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.INVALID_REQUEST, "授权请求已过期");
+        }
+        OAuth2AuthorizeDTO.Request request = (OAuth2AuthorizeDTO.Request)serializableRedisTemplate.opsForValue().getAndDelete(tokenKey);
+
+        // 若未授权，先写入授权记录
+        if (!alreadyAuthorized) {
+            OAuthPermissionDTO permissionDTO = permissionService.get(record.getApplicationId(), record.getUserId());
+            try {
+                if (permissionDTO != null) {
+                    permissionDTO.getPermissions().addAll(record.getScopes());
+                    permissionService.update(permissionDTO);
+                } else {
+                    permissionDTO = new OAuthPermissionDTO();
+                    permissionDTO.setApplicationId(record.getApplicationId());
+                    permissionDTO.setUserId(record.getUserId());
+                    permissionDTO.setPermissions(record.getScopes());
+                    permissionService.save(permissionDTO);
+                }
+            } catch (ServiceException e) {
+                throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.INVALID_REQUEST, "写入授权记录失败");
+            }
+        }
+
+        assert request != null;
+        String redirectUri = request.getRedirectUri();
+        OAuth2ApprovedDO approvedDO = new OAuth2ApprovedDO(redirectUri, request.getClientId(), record.getUserId());
+        String code = StringUtils.randomUUID();
+        while (Boolean.TRUE.equals(serializableRedisTemplate.hasKey(REDIS_CODE_KEY + code))) {
+            code = StringUtils.randomUUID();
+        }
+        serializableRedisTemplate.opsForValue().set(REDIS_CODE_KEY + code, approvedDO, AUTHORIZE_EXPIRE_TIME);
+
+        if (!org.springframework.util.StringUtils.hasText(redirectUri)) {
+            redirectUri = applicationService.getByClientId(request.getClientId()).getCallback();
+        }
+
+        return redirectUri + "?code=" + code + "&state=" + request.getState();
     }
 
 }

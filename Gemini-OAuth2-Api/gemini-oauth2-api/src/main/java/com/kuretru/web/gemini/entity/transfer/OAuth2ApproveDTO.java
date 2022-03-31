@@ -1,9 +1,8 @@
 package com.kuretru.web.gemini.entity.transfer;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.kuretru.web.gemini.entity.query.OAuth2ApproveQuery;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -31,19 +30,9 @@ public class OAuth2ApproveDTO {
     }
 
     @Data
-    public static class Request {
-
-        /** 批准Token */
-        @NotEmpty
-        private String token;
-
-        /** 授权的用户 */
-        @NotNull
-        private UUID userId;
-
-        /** 授权的范围 */
-        @NotEmpty
-        private String scope;
+    @EqualsAndHashCode(callSuper = true)
+    @ToString(callSuper = true)
+    public static class Request extends OAuth2ApproveQuery {
 
         /** 授权动作 */
         @NotNull

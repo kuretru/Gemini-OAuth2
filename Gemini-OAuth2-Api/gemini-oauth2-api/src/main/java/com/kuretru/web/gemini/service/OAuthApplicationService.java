@@ -10,6 +10,14 @@ import com.kuretru.web.gemini.entity.transfer.OAuthApplicationDTO;
 public interface OAuthApplicationService extends BaseService<OAuthApplicationDTO, OAuthApplicationQuery> {
 
     /**
+     * 根据ClientId查询一条记录
+     *
+     * @param clientId ClientId
+     * @return 一条记录，找不到时返回Null
+     */
+    OAuthApplicationDTO getByClientId(String clientId);
+
+    /**
      * 判断客户端传递过来的URI是否合法
      *
      * @param record      数据库中的记录
