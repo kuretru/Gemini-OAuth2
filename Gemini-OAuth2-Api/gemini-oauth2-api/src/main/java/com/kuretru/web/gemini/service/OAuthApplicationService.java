@@ -18,6 +18,14 @@ public interface OAuthApplicationService extends BaseService<OAuthApplicationDTO
     OAuthApplicationDTO getByClientId(String clientId);
 
     /**
+     * 根据ClientID查询ClientSecret
+     *
+     * @param clientId ClientId
+     * @return ClientSecret
+     */
+    String getClientSecret(String clientId);
+
+    /**
      * 判断客户端传递过来的URI是否合法
      *
      * @param record      数据库中的记录
