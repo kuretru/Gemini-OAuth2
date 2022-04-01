@@ -26,7 +26,6 @@ public class OAuth2ApproveQuery {
     private UUID userId;
 
     /** 授权的范围 */
-    @NotNull
     private Set<String> scopes;
 
 }
