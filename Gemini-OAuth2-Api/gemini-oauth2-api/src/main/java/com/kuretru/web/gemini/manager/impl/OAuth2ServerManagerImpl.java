@@ -87,7 +87,11 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
         String token = StringUtils.randomUUID();
         serializableRedisTemplate.opsForValue().set(REDIS_TOKEN_KEY + token, record, AUTHORIZE_EXPIRE_TIME);
 
-        return APPROVE_URL + "?token=" + token + "&application_id=" + applicationDTO.getId() + "&scope=" + record.getScope();
+        String redirectUrl = APPROVE_URL + "?token=" + token + "&application_id=" + applicationDTO.getId();
+        if (org.springframework.util.StringUtils.hasText(record.getScope())) {
+            redirectUrl += "&scope=" + record.getScope();
+        }
+        return redirectUrl;
     }
 
     @Override

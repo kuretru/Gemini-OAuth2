@@ -1,3 +1,22 @@
-### authorize
-GET {{url}}/oauth2/authorize?response_type=code&client_id={{clientId}}&state=abc1
+### Authorize
+GET {{url}}/oauth2/authorize?response_type=code&client_id={{clientId}}&state=abcdefg
 Content-Type: application/json
+
+### IsApproved
+GET {{url}}/oauth2/approve?token={{token}}&application_id={{applicationId}}&user_id={{userId}}
+Content-Type: application/json
+Access-Token-ID: {{access-token-id}}
+Access-Token: {{access-token-secret}}
+
+### Approved
+POST {{url}}/oauth2/approve
+Content-Type: application/json
+Access-Token-ID: {{access-token-id}}
+Access-Token: {{access-token-secret}}
+
+{
+  "token":"{{token}}",
+  "applicationId": "{{applicationId}}",
+  "userId": "{{userId}}",
+  "action": "approve"
+}
