@@ -1,11 +1,11 @@
 package com.kuretru.web.gemini.service;
 
+import com.kuretru.microservices.authentication.entity.UserLoginDTO;
 import com.kuretru.microservices.web.exception.ServiceException;
 import com.kuretru.microservices.web.service.BaseService;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.query.UserQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;
-import com.kuretru.web.gemini.entity.transfer.UserLoginDTO;
 
 /**
  * @author 呉真(kuretru) <kuretru@gmail.com>
