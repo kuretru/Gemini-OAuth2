@@ -5,13 +5,14 @@ import com.kuretru.microservices.authentication.context.AccessTokenContext;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2AccessTokenDTO;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2AuthorizeDTO;
 import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
+import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveDTO;
+import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveQuery;
 import com.kuretru.microservices.web.constant.code.ServiceErrorCodes;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
 import com.kuretru.microservices.web.controller.BaseController;
 import com.kuretru.microservices.web.exception.ServiceException;
-import com.kuretru.web.gemini.entity.query.OAuth2ApproveQuery;
-import com.kuretru.web.gemini.entity.transfer.OAuth2ApproveDTO;
 import com.kuretru.web.gemini.manager.OAuth2ServerManager;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,17 +39,13 @@ public class OAuth2ServerController extends BaseController {
      * 异常应重定向回Application服务器
      *
      * @param request Request
-     * @throws IOException 重定向失败时，引发IO异常
+     * @throws OAuth2Exception OAuth2异常
      */
     @GetMapping("/authorize")
-    public void authorize(@Validated OAuth2AuthorizeDTO.Request request) throws IOException, OAuth2Exception {
-//        try {
+    @SneakyThrows(IOException.class)
+    public void authorize(@Validated OAuth2AuthorizeDTO.Request request) throws OAuth2Exception {
         String redirectUrl = manager.authorize(request);
         response.sendRedirect(redirectUrl);
-//        } catch (OAuth2Exception e) {
-//            String redirectUrl = e.toRedirectUrl();
-//            response.sendRedirect(redirectUrl);
-//        }
     }
 
     /**

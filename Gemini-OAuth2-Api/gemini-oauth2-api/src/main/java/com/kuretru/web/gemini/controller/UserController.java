@@ -5,7 +5,7 @@ import com.kuretru.microservices.authentication.constant.AccessTokenConstants;
 import com.kuretru.microservices.authentication.context.AccessTokenContext;
 import com.kuretru.microservices.oauth2.common.entity.GalaxyUserDTO;
 import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
-import com.kuretru.microservices.oauth2.server.manager.OAuth2AccessTokenManager;
+import com.kuretru.microservices.oauth2.server.memory.OAuth2AccessTokenMemory;
 import com.kuretru.microservices.web.constant.EmptyConstants;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
 import com.kuretru.microservices.web.controller.BaseController;
@@ -28,10 +28,10 @@ import java.util.UUID;
 public class UserController extends BaseController {
 
     private final UserService service;
-    private final OAuth2AccessTokenManager oAuth2AccessTokenManager;
+    private final OAuth2AccessTokenMemory oAuth2AccessTokenManager;
 
     @Autowired
-    public UserController(UserService userService, OAuth2AccessTokenManager oAuth2AccessTokenManager) {
+    public UserController(UserService userService, OAuth2AccessTokenMemory oAuth2AccessTokenManager) {
         this.service = userService;
         this.oAuth2AccessTokenManager = oAuth2AccessTokenManager;
     }
