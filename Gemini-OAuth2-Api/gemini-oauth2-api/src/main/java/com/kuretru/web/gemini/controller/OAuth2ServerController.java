@@ -7,7 +7,6 @@ import com.kuretru.microservices.oauth2.common.entity.OAuth2AuthorizeDTO;
 import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
 import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveDTO;
 import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveQuery;
-import com.kuretru.microservices.web.constant.code.ServiceErrorCodes;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
 import com.kuretru.microservices.web.controller.BaseController;
 import com.kuretru.microservices.web.exception.ServiceException;
@@ -56,14 +55,11 @@ public class OAuth2ServerController extends BaseController {
      */
     @GetMapping("/approve")
     @RequireAuthorization
+    @SneakyThrows(IOException.class)
     public void isApproved(@Validated OAuth2ApproveQuery query) throws ServiceException {
         verifyUserId(query);
         String redirectUrl = manager.isApproved(query);
-        try {
-            response.sendRedirect(redirectUrl);
-        } catch (IOException e) {
-            throw ServiceException.build(ServiceErrorCodes.SYSTEM_EXECUTION_ERROR, "重定向失败");
-        }
+        response.sendRedirect(redirectUrl);
     }
 
     /**
@@ -72,19 +68,16 @@ public class OAuth2ServerController extends BaseController {
      * 异常应重定向回Application服务器
      *
      * @param request 请求实体
-     * @throws IOException 重定向失败时，引发IO异常
+     * @throws ServiceException 业务异常
+     * @throws OAuth2Exception OAuth2异常
      */
     @PostMapping("/approve")
     @RequireAuthorization
-    public void approve(@Validated @RequestBody OAuth2ApproveDTO.Request request) throws IOException, ServiceException {
+    @SneakyThrows(IOException.class)
+    public void approve(@Validated @RequestBody OAuth2ApproveDTO.Request request) throws ServiceException, OAuth2Exception {
         verifyUserId(request);
-        try {
-            String redirectUrl = manager.approve(request);
-            response.sendRedirect(redirectUrl);
-        } catch (OAuth2Exception e) {
-            String redirectUrl = e.toRedirectUrl();
-            response.sendRedirect(redirectUrl);
-        }
+        String redirectUrl = manager.approve(request);
+        response.sendRedirect(redirectUrl);
     }
 
     /**
