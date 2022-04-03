@@ -31,11 +31,12 @@ export async function getInitialState(): Promise<{
       const msg = await getUser(userid);
       return msg.data;
     } catch (error) {
-      history.push(loginPath);
+      history.push(loginPath + '?redirect=' + history.location.pathname + history.location.search);
     }
     return undefined;
   };
   // 如果是登录页面，不执行
+  console.log(history.location);
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
