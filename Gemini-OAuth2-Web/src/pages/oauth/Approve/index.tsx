@@ -16,11 +16,10 @@ class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState>
     const params: API.OAuth2.OAuth2ApproveRequestDTO = {
       token: requestParams.token,
       applicationId: requestParams.application_id,
-      userId: sessionStorage.getItem('userId')!,
+      userId: localStorage.getItem('userId')!,
       scope: requestParams.scope,
       action: action,
     };
-    console.log(params);
     return approve(params);
   };
 
@@ -41,8 +40,8 @@ class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState>
   render() {
     return (
       <GridContent>
-        <ProCard title="xx" actions={this.actionbutton}>
-          内容
+        <ProCard title="OAuth2身份认证" actions={this.actionbutton}>
+          您是否允许访问：
         </ProCard>
       </GridContent>
     );

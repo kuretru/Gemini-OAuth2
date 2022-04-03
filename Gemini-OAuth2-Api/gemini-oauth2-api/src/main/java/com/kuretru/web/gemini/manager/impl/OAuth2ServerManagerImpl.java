@@ -9,8 +9,9 @@ import com.kuretru.microservices.oauth2.common.entity.OAuth2Triple;
 import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
 import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveDTO;
 import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveQuery;
-import com.kuretru.microservices.oauth2.server.entity.OAuth2ApprovedDO;
+import com.kuretru.microservices.oauth2.server.entity.OAuth2ApprovedBO;
 import com.kuretru.microservices.oauth2.server.memory.OAuth2AccessTokenMemory;
+import com.kuretru.microservices.oauth2.server.memory.OAuth2UniqueCodeMemory;
 import com.kuretru.microservices.oauth2.server.memory.OAuth2UniqueStateMemory;
 import com.kuretru.microservices.oauth2.server.memory.OAuth2UniqueTokenMemory;
 import com.kuretru.microservices.oauth2.server.property.OAuth2ServerProperty;
@@ -22,11 +23,8 @@ import com.kuretru.web.gemini.manager.OAuth2ServerManager;
 import com.kuretru.web.gemini.service.OAuthApplicationService;
 import com.kuretru.web.gemini.service.OAuthPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
-import java.time.Duration;
 import java.util.Set;
 
 /**
@@ -35,34 +33,29 @@ import java.util.Set;
 @Service
 public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
 
-    private static final String REDIS_ROOT_KEY = "OAuth2ServerManager.";
-    private static final String REDIS_TOKEN_KEY = REDIS_ROOT_KEY + "token.";
-    private static final String REDIS_CODE_KEY = REDIS_ROOT_KEY + "code.";
-    private static final Duration AUTHORIZE_EXPIRE_TIME = Duration.ofMinutes(15);
     private static final String APPROVE_URL = "/oauth/approve";
 
     private final OAuth2ServerProperty property;
     private final OAuth2AccessTokenMemory accessTokenMemory;
     private final OAuth2UniqueStateMemory uniqueStateMemory;
     private final OAuth2UniqueTokenMemory uniqueTokenMemory;
+    private final OAuth2UniqueCodeMemory uniqueCodeMemory;
     private final OAuthApplicationService applicationService;
     private final OAuthPermissionService permissionService;
-    private final RedisTemplate<String, Serializable> serializableRedisTemplate;
 
     @Autowired
     public OAuth2ServerManagerImpl(OAuth2ServerProperty property, OAuth2AccessTokenMemory accessTokenMemory,
                                    OAuth2UniqueStateMemory uniqueStateMemory, OAuth2UniqueTokenMemory uniqueTokenMemory,
-                                   OAuthApplicationService applicationService, OAuthPermissionService permissionService,
-                                   RedisTemplate<String, Serializable> serializableRedisTemplate) {
+                                   OAuth2UniqueCodeMemory uniqueCodeMemory,
+                                   OAuthApplicationService applicationService, OAuthPermissionService permissionService) {
         this.property = property;
         this.accessTokenMemory = accessTokenMemory;
         this.uniqueStateMemory = uniqueStateMemory;
         this.uniqueTokenMemory = uniqueTokenMemory;
+        this.uniqueCodeMemory = uniqueCodeMemory;
         this.applicationService = applicationService;
         this.permissionService = permissionService;
-        this.serializableRedisTemplate = serializableRedisTemplate;
     }
-
 
     @Override
     public String authorize(OAuth2AuthorizeDTO.Request record) throws OAuth2Exception {
@@ -128,14 +121,14 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
     public OAuth2AccessTokenDTO.Response accessToken(OAuth2AccessTokenDTO.Request request) throws OAuth2Exception {
         if (!OAuth2Constants.ACCESS_TOKEN_REQUEST_GRANT_TYPE.equals(request.getGrantType())) {
             throw new OAuth2Exception(OAuth2ErrorEnum.AccessTokenError.UNSUPPORTED_GRANT_TYPE, "服务端仅支持认证码方式");
-        } else if (Boolean.FALSE.equals(serializableRedisTemplate.hasKey(REDIS_CODE_KEY + request.getCode()))) {
+        }
+        OAuth2ApprovedBO approvedDO = uniqueCodeMemory.getAndDelete(request.getCode());
+        if (approvedDO == null) {
             throw new OAuth2Exception(OAuth2ErrorEnum.AccessTokenError.UNAUTHORIZED_CLIENT, "授权请求已过期");
         }
 
-        OAuth2ApprovedDO approvedDO = (OAuth2ApprovedDO)serializableRedisTemplate.opsForValue().getAndDelete(REDIS_CODE_KEY + request.getCode());
-        assert approvedDO != null;
-        if (approvedDO.getRedirectUri() == null) {
-            if (request.getRedirectUri() != null) {
+        if (!org.springframework.util.StringUtils.hasText(approvedDO.getRedirectUri())) {
+            if (org.springframework.util.StringUtils.hasText(request.getRedirectUri())) {
                 throw new OAuth2Exception(OAuth2ErrorEnum.AccessTokenError.INVALID_REQUEST, "重定向地址不匹配");
             }
         } else if (!approvedDO.getRedirectUri().equals(request.getRedirectUri())) {
@@ -144,11 +137,11 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
             throw new OAuth2Exception(OAuth2ErrorEnum.AccessTokenError.INVALID_CLIENT, "客户端ID不匹配");
         }
 
-        OAuthApplicationDTO applicationDTO = applicationService.getByClientId(approvedDO.getClientId());
         if (!request.getClientSecret().equals(applicationService.getClientSecret(request.getClientId()))) {
             throw new OAuth2Exception(OAuth2ErrorEnum.AccessTokenError.INVALID_GRANT, "客户端密钥不匹配");
         }
 
+        OAuthApplicationDTO applicationDTO = applicationService.getByClientId(approvedDO.getClientId());
         OAuth2Triple triple = new OAuth2Triple(applicationDTO.getId(), approvedDO.getUserId(), approvedDO.getScopes());
         return accessTokenMemory.generate(triple);
     }
@@ -161,11 +154,11 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
      * @return 重定向至应用的URL
      */
     private String authorized(OAuth2ApproveQuery record, boolean alreadyAuthorized) throws OAuth2Exception {
-        String tokenKey = REDIS_TOKEN_KEY + record.getToken();
-        if (Boolean.FALSE.equals(serializableRedisTemplate.hasKey(tokenKey))) {
+        // 根据Token获取OAuth2认证请求
+        OAuth2AuthorizeDTO.Request request = uniqueTokenMemory.getAndDelete(record.getToken());
+        if (request == null) {
             throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.INVALID_REQUEST, "授权请求已过期");
         }
-        OAuth2AuthorizeDTO.Request request = (OAuth2AuthorizeDTO.Request)serializableRedisTemplate.opsForValue().getAndDelete(tokenKey);
         Set<String> scopes = StringUtils.stringToSet(record.getScope(), OAuth2Constants.SCOPES_SEPARATOR);
 
         // 若未授权，先写入授权记录
@@ -187,19 +180,15 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
             }
         }
 
-        assert request != null;
+        // 生成返回给客户端的code凭据
         String redirectUri = request.getRedirectUri();
-        OAuth2ApprovedDO approvedDO = new OAuth2ApprovedDO(redirectUri, request.getClientId(), record.getUserId(), scopes);
-        String code = StringUtils.randomUUID();
-        while (Boolean.TRUE.equals(serializableRedisTemplate.hasKey(REDIS_CODE_KEY + code))) {
-            code = StringUtils.randomUUID();
-        }
-        serializableRedisTemplate.opsForValue().set(REDIS_CODE_KEY + code, approvedDO, AUTHORIZE_EXPIRE_TIME);
+        OAuth2ApprovedBO approvedBO = new OAuth2ApprovedBO(redirectUri, request.getClientId(), record.getUserId(), scopes);
+        String code = uniqueCodeMemory.generateAndSave(approvedBO);
 
+        // 构造重定向地址
         if (!org.springframework.util.StringUtils.hasText(redirectUri)) {
             redirectUri = applicationService.getByClientId(request.getClientId()).getCallback();
         }
-
         return redirectUri + "?code=" + code + "&state=" + request.getState();
     }
 
