@@ -33,6 +33,14 @@ export default [
     name: 'OAuth2应用管理',
     icon: 'appstore',
   },
+  {
+    path: '/oauth/approve',
+    component: './oauth/Approve',
+    headerRender: false,
+    menuRender: false,
+    name: 'OAuth2授权',
+    icon: 'smile',
+  },
 
   {
     path: '/admin',
