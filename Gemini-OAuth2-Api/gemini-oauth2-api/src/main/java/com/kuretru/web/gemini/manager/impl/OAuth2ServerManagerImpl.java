@@ -7,13 +7,15 @@ import com.kuretru.microservices.oauth2.common.entity.OAuth2AuthorizeDTO;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2ErrorEnum;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2Triple;
 import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
-import com.kuretru.microservices.oauth2.server.manager.OAuth2AccessTokenManager;
+import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveDTO;
+import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveQuery;
+import com.kuretru.microservices.oauth2.server.entity.OAuth2ApprovedDO;
+import com.kuretru.microservices.oauth2.server.memory.OAuth2AccessTokenMemory;
+import com.kuretru.microservices.oauth2.server.memory.OAuth2UniqueStateMemory;
+import com.kuretru.microservices.oauth2.server.memory.OAuth2UniqueTokenMemory;
 import com.kuretru.microservices.oauth2.server.property.OAuth2ServerProperty;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
 import com.kuretru.microservices.web.exception.ServiceException;
-import com.kuretru.web.gemini.entity.data.OAuth2ApprovedDO;
-import com.kuretru.web.gemini.entity.query.OAuth2ApproveQuery;
-import com.kuretru.web.gemini.entity.transfer.OAuth2ApproveDTO;
 import com.kuretru.web.gemini.entity.transfer.OAuthApplicationDTO;
 import com.kuretru.web.gemini.entity.transfer.OAuthPermissionDTO;
 import com.kuretru.web.gemini.manager.OAuth2ServerManager;
@@ -34,29 +36,30 @@ import java.util.Set;
 public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
 
     private static final String REDIS_ROOT_KEY = "OAuth2ServerManager.";
-    private static final String REDIS_STATE_STATE_KEY = REDIS_ROOT_KEY + "state.";
     private static final String REDIS_TOKEN_KEY = REDIS_ROOT_KEY + "token.";
     private static final String REDIS_CODE_KEY = REDIS_ROOT_KEY + "code.";
     private static final Duration AUTHORIZE_EXPIRE_TIME = Duration.ofMinutes(15);
-
     private static final String APPROVE_URL = "/oauth/approve";
 
     private final OAuth2ServerProperty property;
+    private final OAuth2AccessTokenMemory accessTokenMemory;
+    private final OAuth2UniqueStateMemory uniqueStateMemory;
+    private final OAuth2UniqueTokenMemory uniqueTokenMemory;
     private final OAuthApplicationService applicationService;
     private final OAuthPermissionService permissionService;
-    private final OAuth2AccessTokenManager accessTokenManager;
-    private final RedisTemplate<String, String> stringRedisTemplate;
     private final RedisTemplate<String, Serializable> serializableRedisTemplate;
 
     @Autowired
-    public OAuth2ServerManagerImpl(OAuthApplicationService applicationService, OAuthPermissionService permissionService,
-                                   OAuth2AccessTokenManager accessTokenManager, OAuth2ServerProperty property,
-                                   RedisTemplate<String, String> stringRedisTemplate, RedisTemplate<String, Serializable> serializableRedisTemplate) {
+    public OAuth2ServerManagerImpl(OAuth2ServerProperty property, OAuth2AccessTokenMemory accessTokenMemory,
+                                   OAuth2UniqueStateMemory uniqueStateMemory, OAuth2UniqueTokenMemory uniqueTokenMemory,
+                                   OAuthApplicationService applicationService, OAuthPermissionService permissionService,
+                                   RedisTemplate<String, Serializable> serializableRedisTemplate) {
         this.property = property;
+        this.accessTokenMemory = accessTokenMemory;
+        this.uniqueStateMemory = uniqueStateMemory;
+        this.uniqueTokenMemory = uniqueTokenMemory;
         this.applicationService = applicationService;
         this.permissionService = permissionService;
-        this.accessTokenManager = accessTokenManager;
-        this.stringRedisTemplate = stringRedisTemplate;
         this.serializableRedisTemplate = serializableRedisTemplate;
     }
 
@@ -69,11 +72,9 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
         }
 
         // 判断State是否重复使用
-        String stateKey = REDIS_STATE_STATE_KEY + record.getState();
-        if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(stateKey))) {
+        if (uniqueStateMemory.exist(record.getState())) {
             throw new OAuth2Exception(OAuth2ErrorEnum.AuthorizeError.INVALID_REQUEST, "重复使用的State字段");
         }
-        stringRedisTemplate.opsForValue().set(stateKey, record.getState(), AUTHORIZE_EXPIRE_TIME);
 
         // 判断ClientID是否合法
         OAuthApplicationDTO applicationDTO = applicationService.getByClientId(record.getClientId());
@@ -87,10 +88,12 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
         }
 
         // 生成返回给前端的Token
-        String token = StringUtils.randomUUID();
-        serializableRedisTemplate.opsForValue().set(REDIS_TOKEN_KEY + token, record, AUTHORIZE_EXPIRE_TIME);
+        String token = uniqueTokenMemory.generateAndSave(record);
 
-        String redirectUrl = property.getFrontEndUrl() + APPROVE_URL + "?token=" + token + "&application_id=" + applicationDTO.getId();
+        // 返回重定向至前端的URL
+        String redirectUrl = property.getFrontEndUrl() + APPROVE_URL +
+                "?token=" + token +
+                "&application_id=" + applicationDTO.getId();
         if (org.springframework.util.StringUtils.hasText(record.getScope())) {
             redirectUrl += "&scope=" + record.getScope();
         }
@@ -147,7 +150,7 @@ public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
         }
 
         OAuth2Triple triple = new OAuth2Triple(applicationDTO.getId(), approvedDO.getUserId(), approvedDO.getScopes());
-        return accessTokenManager.generate(triple);
+        return accessTokenMemory.generate(triple);
     }
 
     /**

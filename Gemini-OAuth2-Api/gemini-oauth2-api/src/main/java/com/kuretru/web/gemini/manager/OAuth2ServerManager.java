@@ -3,9 +3,9 @@ package com.kuretru.web.gemini.manager;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2AccessTokenDTO;
 import com.kuretru.microservices.oauth2.common.entity.OAuth2AuthorizeDTO;
 import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
+import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveDTO;
+import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveQuery;
 import com.kuretru.microservices.web.exception.ServiceException;
-import com.kuretru.web.gemini.entity.query.OAuth2ApproveQuery;
-import com.kuretru.web.gemini.entity.transfer.OAuth2ApproveDTO;
 
 /**
  * @author 呉真(kuretru) <kuretru@gmail.com>
@@ -22,7 +22,7 @@ public interface OAuth2ServerManager {
     String authorize(OAuth2AuthorizeDTO.Request record) throws OAuth2Exception;
 
     /**
-     * 判断用户是否已批准该应用访问
+     * 判断用户是否已批准该应用访问，若已批准则直接执行重定向流程
      *
      * @param query 查询条件
      * @return 重定向至应用的URL
