@@ -18,3 +18,9 @@ GET {{url}}/users/{{userId}}
 Content-Type: application/json
 Access-Token-ID: {{access-token-id}}
 Access-Token: {{access-token-secret}}
+
+
+### OAuth2 GET
+GET {{url}}/users
+Content-Type: application/json
+Authorization: token da4bedae3c7d4cd897cd4bfb131ca892

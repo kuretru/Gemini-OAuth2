@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -26,6 +25,6 @@ public class OAuth2ApproveQuery {
     private UUID userId;
 
     /** 授权的范围 */
-    private Set<String> scopes;
+    private String scope;
 
 }
