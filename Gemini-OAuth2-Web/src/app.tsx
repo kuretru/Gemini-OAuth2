@@ -26,13 +26,11 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const userid = sessionStorage.getItem('userId');
+      const userid = localStorage.getItem('userId');
       if (!userid) return undefined;
       const msg = await getUser(userid);
       return msg.data;
     } catch (error) {
-      console.log('app');
-      console.log(history.location);
       history.push({
         pathname: loginPath,
         query: {
@@ -60,7 +58,7 @@ export async function getInitialState(): Promise<{
 
 /** Request的AccessToken拦截器 */
 const accessTokenInterceptor = (url: string, options: RequestOptionsInit) => {
-  const id = sessionStorage.getItem('accessTokenId');
+  const id = localStorage.getItem('accessTokenId');
   if (!id) {
     return {
       url: `${url}`,
@@ -70,7 +68,7 @@ const accessTokenInterceptor = (url: string, options: RequestOptionsInit) => {
 
   const authHeader = {
     'Access-Token-ID': id,
-    'Access-Token': sessionStorage.getItem('accessToken'),
+    'Access-Token': localStorage.getItem('accessToken'),
   };
   return {
     url: `${url}`,
