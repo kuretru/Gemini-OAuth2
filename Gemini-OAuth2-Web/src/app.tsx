@@ -31,12 +31,19 @@ export async function getInitialState(): Promise<{
       const msg = await getUser(userid);
       return msg.data;
     } catch (error) {
-      history.push(loginPath + '?redirect=' + history.location.pathname + history.location.search);
+      console.log('app');
+      console.log(history.location);
+      history.push({
+        pathname: loginPath,
+        query: {
+          redirect: history.location.pathname,
+          ...history.location.query,
+        },
+      });
     }
     return undefined;
   };
   // 如果是登录页面，不执行
-  console.log(history.location);
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
@@ -106,7 +113,13 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       const { location } = history;
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+        history.push({
+          pathname: loginPath,
+          query: {
+            redirect: history.location.pathname,
+            ...history.location.query,
+          },
+        });
       }
     },
     links: isDev
