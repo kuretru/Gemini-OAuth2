@@ -9,6 +9,7 @@ import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveDTO;
 import com.kuretru.microservices.oauth2.server.entity.OAuth2ApproveQuery;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
 import com.kuretru.microservices.web.controller.BaseController;
+import com.kuretru.microservices.web.entity.ApiResponse;
 import com.kuretru.microservices.web.exception.ServiceException;
 import com.kuretru.web.gemini.manager.OAuth2ServerManager;
 import lombok.SneakyThrows;
@@ -44,6 +45,9 @@ public class OAuth2ServerController extends BaseController {
     @SneakyThrows(IOException.class)
     public void authorize(@Validated OAuth2AuthorizeDTO.Request request) throws OAuth2Exception {
         String redirectUrl = manager.authorize(request);
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         response.sendRedirect(redirectUrl);
     }
 
@@ -55,11 +59,9 @@ public class OAuth2ServerController extends BaseController {
      */
     @GetMapping("/approve")
     @RequireAuthorization
-    @SneakyThrows(IOException.class)
-    public void isApproved(@Validated OAuth2ApproveQuery query) throws ServiceException {
+    public ApiResponse<?> isApproved(@Validated OAuth2ApproveQuery query) throws ServiceException {
         verifyUserId(query);
-        String redirectUrl = manager.isApproved(query);
-        response.sendRedirect(redirectUrl);
+        return ApiResponse.success(manager.isApproved(query));
     }
 
     /**
@@ -69,15 +71,13 @@ public class OAuth2ServerController extends BaseController {
      *
      * @param request 请求实体
      * @throws ServiceException 业务异常
-     * @throws OAuth2Exception OAuth2异常
+     * @throws OAuth2Exception  OAuth2异常
      */
     @PostMapping("/approve")
     @RequireAuthorization
-    @SneakyThrows(IOException.class)
-    public void approve(@Validated @RequestBody OAuth2ApproveDTO.Request request) throws ServiceException, OAuth2Exception {
+    public ApiResponse<?> approve(@Validated @RequestBody OAuth2ApproveDTO.Request request) throws ServiceException, OAuth2Exception {
         verifyUserId(request);
-        String redirectUrl = manager.approve(request);
-        response.sendRedirect(redirectUrl);
+        return ApiResponse.success(manager.approve(request));
     }
 
     /**
