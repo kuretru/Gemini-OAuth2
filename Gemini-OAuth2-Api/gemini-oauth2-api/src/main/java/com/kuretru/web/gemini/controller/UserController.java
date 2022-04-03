@@ -1,7 +1,11 @@
 package com.kuretru.web.gemini.controller;
 
 import com.kuretru.microservices.authentication.annotaion.RequireAuthorization;
+import com.kuretru.microservices.authentication.constant.AccessTokenConstants;
 import com.kuretru.microservices.authentication.context.AccessTokenContext;
+import com.kuretru.microservices.oauth2.common.entity.GalaxyUserDTO;
+import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
+import com.kuretru.microservices.oauth2.server.manager.OAuth2AccessTokenManager;
 import com.kuretru.microservices.web.constant.EmptyConstants;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
 import com.kuretru.microservices.web.controller.BaseController;
@@ -11,6 +15,7 @@ import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;
 import com.kuretru.web.gemini.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -23,10 +28,31 @@ import java.util.UUID;
 public class UserController extends BaseController {
 
     private final UserService service;
+    private final OAuth2AccessTokenManager oAuth2AccessTokenManager;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, OAuth2AccessTokenManager oAuth2AccessTokenManager) {
         this.service = userService;
+        this.oAuth2AccessTokenManager = oAuth2AccessTokenManager;
+    }
+
+    @GetMapping
+    public ApiResponse<?> oauth2Get() throws ServiceException {
+        String authorization = request.getHeader(AccessTokenConstants.AUTHORIZATION);
+        if (!StringUtils.hasText(authorization)) {
+            throw new ServiceException(UserErrorCodes.ACCESS_PERMISSION_ERROR, "请求头中AccessToken不存在");
+        } else if (!authorization.startsWith("token ")) {
+            throw new ServiceException(UserErrorCodes.ACCESS_PERMISSION_ERROR, "AccessToken格式不正确");
+        }
+        String token = authorization.replace("token ", "");
+        try {
+            UUID userId = oAuth2AccessTokenManager.verify(token, "");
+            UserDTO userDTO = service.get(userId);
+            GalaxyUserDTO result = new GalaxyUserDTO(userDTO.getId(), userDTO.getNickname(), userDTO.getAvatar());
+            return ApiResponse.success(result);
+        } catch (OAuth2Exception e) {
+            throw new ServiceException(UserErrorCodes.ACCESS_PERMISSION_ERROR, e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")

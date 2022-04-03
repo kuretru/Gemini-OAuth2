@@ -9,3 +9,7 @@ logging:
         web:
           gemini:
             mapper: debug
+galaxy:
+  oauth2:
+    server:
+      front-end-url: http://127.0.0.1:7052
