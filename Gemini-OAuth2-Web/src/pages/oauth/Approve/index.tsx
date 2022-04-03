@@ -11,7 +11,7 @@ interface OAuthApproveProps {}
 interface OAuthApproveState {}
 
 class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState> {
-  fetchData = (action: string) => {
+  userApprove = async (action: string) => {
     const requestParams = getRequestParams();
     const params: API.OAuth2.OAuth2ApproveRequestDTO = {
       token: requestParams.token,
@@ -20,18 +20,20 @@ class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState>
       scope: requestParams.scope,
       action: action,
     };
-    return approve(params);
+    const response = await approve(params);
+    console.log(response);
+    window.location.href = response.data;
   };
 
   actionbutton = [
-    <Button key="reject" icon={<CloseCircleOutlined />} onClick={() => this.fetchData('reject')}>
+    <Button key="reject" icon={<CloseCircleOutlined />} onClick={() => this.userApprove('reject')}>
       拒绝
     </Button>,
     <Button
       key="approve"
       icon={<CheckCircleOutlined />}
       type="primary"
-      onClick={() => this.fetchData('approve')}
+      onClick={() => this.userApprove('approve')}
     >
       授权
     </Button>,
