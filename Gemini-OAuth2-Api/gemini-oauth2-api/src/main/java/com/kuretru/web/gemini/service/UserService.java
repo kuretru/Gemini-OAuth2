@@ -24,8 +24,9 @@ public interface UserService extends BaseService<UserDTO, UserQuery> {
     /**
      * 用户登出
      *
-     * @throws ServiceException 未登录时会产生异常
+     * @param accessTokenId AccessTokenID
+     * @throws ServiceException 登出失败时会产生异常
      */
-    void logout() throws ServiceException;
+    void logout(String accessTokenId) throws ServiceException;
 
 }
