@@ -5,7 +5,7 @@ import { ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import Footer from '@/components/Footer';
 import styles from './index.less';
-import { login } from '@/services/gemini-oauth2/user';
+import { login } from '@/services/gemini-oauth2/user/user';
 
 const Login: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
