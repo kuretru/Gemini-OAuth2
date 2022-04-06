@@ -1,7 +1,7 @@
 import { ErrorShowType, history } from 'umi';
 import type { RequestConfig } from 'umi';
 import type { RequestOptionsInit } from 'umi-request';
-import { get as getUser } from '@/services/gemini-oauth2/user';
+import { get as getUser } from '@/services/gemini-oauth2/user/user';
 
 const loginPath = '/users/login';
 

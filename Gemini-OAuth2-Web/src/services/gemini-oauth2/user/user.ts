@@ -15,4 +15,13 @@ async function login(
   });
 }
 
-export { get, login };
+async function logout(): Promise<API.ApiResponse<string>> {
+  return request<API.ApiResponse<string>>(`/api/users/logout`, {
+    method: 'post',
+    data: {
+      id: localStorage.getItem('accessTokenId'),
+    },
+  });
+}
+
+export { get, login, logout };
