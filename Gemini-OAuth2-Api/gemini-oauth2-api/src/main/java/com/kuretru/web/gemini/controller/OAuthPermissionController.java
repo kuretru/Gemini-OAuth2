@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/oauth/permissions/")
-@RequireAuthorization
+@RequireAuthorization(hasRole = "admin")
 public class OAuthPermissionController extends BaseRestController<OAuthPermissionService, OAuthPermissionDTO, OAuthPermissionQuery> {
 
     @Autowired
