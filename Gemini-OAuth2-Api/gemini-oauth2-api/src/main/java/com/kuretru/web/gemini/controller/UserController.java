@@ -3,6 +3,7 @@ package com.kuretru.web.gemini.controller;
 import com.kuretru.microservices.authentication.annotaion.RequireAuthorization;
 import com.kuretru.microservices.authentication.constant.AccessTokenConstants;
 import com.kuretru.microservices.authentication.context.AccessTokenContext;
+import com.kuretru.microservices.authentication.entity.AccessTokenDTO;
 import com.kuretru.microservices.oauth2.common.entity.GalaxyUserDTO;
 import com.kuretru.microservices.oauth2.common.exception.OAuth2Exception;
 import com.kuretru.microservices.oauth2.server.memory.OAuth2AccessTokenMemory;
@@ -78,7 +79,8 @@ public class UserController extends BaseController {
 
     @PostMapping("/logout")
     @RequireAuthorization
-    public ApiResponse<?> logout() {
+    public ApiResponse<?> logout(@RequestBody AccessTokenDTO accessToken) {
+        service.logout(accessToken.getId());
         return ApiResponse.success("已退出登录...");
     }
 

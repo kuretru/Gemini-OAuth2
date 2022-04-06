@@ -1,6 +1,8 @@
 package com.kuretru.web.gemini.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.kuretru.microservices.authentication.context.AccessTokenContext;
+import com.kuretru.microservices.authentication.entity.AccessTokenBO;
 import com.kuretru.microservices.authentication.entity.AccessTokenDTO;
 import com.kuretru.microservices.authentication.entity.UserLoginDTO;
 import com.kuretru.microservices.authentication.manager.AccessTokenManager;
@@ -58,8 +60,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
     }
 
     @Override
-    public void logout() throws ServiceException {
-
+    public void logout(String accessTokenId) throws ServiceException {
+        AccessTokenBO accessTokenBO = accessTokenManager.get(accessTokenId);
+        UUID userId = AccessTokenContext.getUserId();
+        if (!accessTokenBO.getUserId().equals(userId)) {
+            throw new ServiceException(UserErrorCodes.ACCESS_PERMISSION_ERROR, "AccessTokenID与操作用户不匹配");
+        }
+        accessTokenManager.revoke(accessTokenId);
     }
 
     @Override
