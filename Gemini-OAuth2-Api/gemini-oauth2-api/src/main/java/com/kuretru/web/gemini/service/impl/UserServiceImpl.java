@@ -69,11 +69,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
         accessTokenManager.revoke(accessTokenId);
     }
 
-    @Override
-    public synchronized UserDTO save(UserDTO record) throws ServiceException {
-        return super.save(record);
-    }
-
     private UserDO getByUsernameOrEmailOrMobile(String username) {
         QueryWrapper<UserDO> queryWrapper = new QueryWrapper<>();
         queryWrapper
