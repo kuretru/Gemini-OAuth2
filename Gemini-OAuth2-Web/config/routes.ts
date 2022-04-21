@@ -1,32 +1,18 @@
 export default [
   {
-    component: './Welcome',
-    icon: 'smile',
-    name: '欢迎',
-    path: '/welcome',
-  },
-  {
     path: '/users',
+    layout: false,
     routes: [
       {
         path: '/users',
         routes: [
-          {
-            component: './user/AccountSettings',
-            icon: 'smile',
-            name: '个人设置',
-            path: '/users',
-          },
-          {
-            component: './user/Login',
-            path: '/users/login',
-            layout: false,
-            name: '登录',
-          },
+          { component: './user/AccountSettings', name: '个人设置', path: '/users/settings' },
+          { component: './user/Login', path: '/users/login', name: '登录' },
         ],
       },
     ],
   },
+  { component: './Welcome', icon: 'smile', name: '欢迎', path: '/welcome' },
   {
     access: 'isAdmin',
     icon: 'appstore',
