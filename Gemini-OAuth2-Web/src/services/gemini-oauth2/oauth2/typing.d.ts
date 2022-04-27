@@ -1,3 +1,6 @@
+// @ts-ignore
+/* eslint-disable */
+
 declare namespace API.OAuth2 {
   type OAuth2ApproveRequestDTO = {
     token: string;

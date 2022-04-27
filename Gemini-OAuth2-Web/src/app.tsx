@@ -1,10 +1,10 @@
-import { history } from 'umi';
 import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
-import { SettingDrawer, PageLoading } from '@ant-design/pro-layout';
+import { history } from 'umi';
+import { PageLoading, SettingDrawer } from '@ant-design/pro-layout';
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { LinkOutlined } from '@ant-design/icons';
-import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
+import Footer from '@/components/Footer';
+import { LinkOutlined } from '@ant-design/icons';
 import defaultSettings from '../config/defaultSettings';
 import { fetchUserInfo, requestConfig } from '@/utils/app-utils';
 
