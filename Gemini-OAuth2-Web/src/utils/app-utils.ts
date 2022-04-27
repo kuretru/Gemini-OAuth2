@@ -11,9 +11,9 @@ const loginPath = '/users/login';
  */
 const fetchUserInfo = async () => {
   try {
-    const userid = localStorage.getItem('userId');
-    if (!userid) return undefined;
-    const msg = await getUser(userid);
+    const userId = localStorage.getItem('userId');
+    if (!userId) return undefined;
+    const msg = await getUser(userId);
     return msg.data;
   } catch (error) {
     history.push({

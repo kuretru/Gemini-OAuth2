@@ -13,59 +13,77 @@ import {
 import { approve } from '@/services/gemini-oauth2/oauth2';
 import OAuthApplicationService from '@/services/gemini-oauth2/oauth/application';
 import { getRequestParams } from '@/utils/request-utils';
+import { get as getUser } from '@/services/gemini-oauth2/user/user';
 import styles from './index.less';
 
 interface OAuthApproveProps {}
 
 interface OAuthApproveState {
   application: API.OAuth.OAuthApplicationDTO;
+  user: API.User.UserDTO;
+  permissions: API.OAuth.OAuthPermissionDTO[];
 }
 
 class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState> {
   oAuthApplicationService: OAuthApplicationService = new OAuthApplicationService();
-  permissions: API.OAuth.OAuthPermissionDTO[] = [
-    {
-      permission: '',
-      avatar: <SmileOutlined />,
-      title: '昵称',
-      description: '昵称和头像',
-    },
-    {
-      permission: 'email',
-      avatar: <MailOutlined />,
-      title: '电子邮箱',
-      description: '电子邮箱地址',
-    },
-    {
-      permission: 'mobile',
-      avatar: <PhoneOutlined />,
-      title: '手机号码',
-      description: '手机号码',
-    },
-  ];
+  requestParams = getRequestParams();
 
   constructor(props: OAuthApproveProps) {
     super(props);
+    this.state = {
+      application: { name: '', avatar: '', description: '', homepage: '', callback: 0 },
+      user: { username: '', nickname: '', avatar: '', email: '', mobile: '', isAdmin: false },
+      permissions: [
+        {
+          permission: '',
+          avatar: <SmileOutlined />,
+          title: '昵称',
+          description: '昵称和头像',
+        },
+      ],
+    };
     this.getApplication();
+    this.getPermissions();
   }
 
   getApplication = async () => {
-    const requestParams = getRequestParams();
-    if (!requestParams.application_id) {
+    if (!this.requestParams.application_id) {
       message.error('OAuth应用ID不存在');
       return;
     }
-    const application = await this.oAuthApplicationService.get(requestParams.application_id);
-    this.setState({ application: application.data });
+    const application = await this.oAuthApplicationService.get(this.requestParams.application_id);
+    const userId = localStorage.getItem('userId');
+    const user = await getUser(userId!);
+    this.setState({ application: application.data, user: user.data });
+  };
+
+  getPermissions = () => {
+    const scopes: string[] = this.requestParams.scope ? this.requestParams.scope.split(',') : [];
+    const permissions = this.state.permissions;
+    if (scopes.find((entry) => entry.startsWith('email'))) {
+      permissions.push({
+        permission: scopes.find((entry) => entry.startsWith('email'))!,
+        avatar: <MailOutlined />,
+        title: '电子邮箱',
+        description: '电子邮箱地址',
+      });
+    }
+    if (scopes.find((entry) => entry.startsWith('mobile'))) {
+      permissions.push({
+        permission: scopes.find((entry) => entry.startsWith('mobile'))!,
+        avatar: <PhoneOutlined />,
+        title: '手机号码',
+        description: '手机号码',
+      });
+    }
   };
 
   userApprove = async (action: string) => {
-    const requestParams = getRequestParams();
     const params: API.OAuth2.OAuth2ApproveRequestDTO = {
-      token: requestParams.token,
-      applicationId: requestParams.application_id,
+      token: this.requestParams.token,
+      applicationId: this.requestParams.application_id,
       userId: localStorage.getItem('userId')!,
-      scope: requestParams.scope,
+      scope: this.requestParams.scope,
       action: action,
     };
     const response = await approve(params);
@@ -91,20 +109,22 @@ class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState>
     return (
       <GridContent>
         <div className={styles.container}>
-          <ProCard title="OAuth2身份认证" actions={this.actionbutton} style={{ width: '64em' }}>
+          <ProCard className={styles.content} title="OAuth2身份认证" actions={this.actionbutton}>
             <div className={styles.avatar}>
-              <Avatar size={96} src={this.state?.application.avatar} />
+              <Avatar size={96} src={this.state.application.avatar} />
               <ArrowRightOutlined className={styles.arrow} />
-              <Avatar size={96} src={this.state?.application.avatar} />
+              <Avatar size={96} src={this.state.user.avatar} />
             </div>
             您是否允许
-            <Tooltip placement={'bottomLeft'} title={this.state?.application.description}>
-              <Button type="link">{this.state?.application.name}</Button>
+            <Tooltip placement={'bottomLeft'} title={this.state.application.description}>
+              <Button type="link" style={{ padding: '0 3px' }}>
+                <strong>{this.state.application.name}</strong>
+              </Button>
             </Tooltip>
             进行以下操作：
             <List
               bordered
-              dataSource={this.permissions}
+              dataSource={this.state.permissions}
               itemLayout={'horizontal'}
               renderItem={(item) => (
                 <List.Item>
