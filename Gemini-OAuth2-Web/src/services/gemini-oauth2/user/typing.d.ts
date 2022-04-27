@@ -1,3 +1,6 @@
+// @ts-ignore
+/* eslint-disable */
+
 declare namespace API.User {
   type UserDTO = API.BaseDTO & {
     username: string;

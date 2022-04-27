@@ -6,7 +6,7 @@ export default [
       {
         path: '/users',
         routes: [
-          { component: './user/AccountSettings', name: '个人设置', path: '/users/settings' },
+          { component: './user/Setting', name: '个人设置', path: '/users/settings' },
           { component: './user/Login', path: '/users/login', name: '登录' },
         ],
       },

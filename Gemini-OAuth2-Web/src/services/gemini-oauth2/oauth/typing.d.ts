@@ -1,3 +1,6 @@
+// @ts-ignore
+/* eslint-disable */
+
 declare namespace API.OAuth {
   type OAuthApplicationDTO = API.BaseDTO & {
     name: string;
@@ -9,5 +12,12 @@ declare namespace API.OAuth {
 
   type OAuthApplicationQuery = API.PaginationQuery & {
     name?: string;
+  };
+
+  type OAuthPermissionDTO = {
+    permission: string;
+    avatar: JSX;
+    title: string;
+    description: string;
   };
 }
