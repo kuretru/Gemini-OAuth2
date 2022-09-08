@@ -17,11 +17,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/projectlombok/lombok/1.18.22/lombok-1.18.22.jar" />
-          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/springframework/boot/spring-boot-configuration-processor/2.6.5/spring-boot-configuration-processor-2.6.5.jar" />
+          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/projectlombok/lombok/1.18.24/lombok-1.18.24.jar" />
+          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/springframework/boot/spring-boot-configuration-processor/2.7.3/spring-boot-configuration-processor-2.7.3.jar" />
         </processorPath>
-        <module name="galaxy-oauth2-server" />
         <module name="galaxy-authentication" />
+        <module name="galaxy-oauth2-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -46,7 +46,7 @@
       <module name="galaxy-web" options="-parameters" />
       <module name="gemini-oatuh2-api" options="-parameters" />
       <module name="gemini-oauth2-api" options="-parameters" />
-      <module name="gemini-oauth2-parent" options="-parameters" />
+      <module name="gemini-oauth2-parent" options="" />
     </option>
   </component>
 </project>
