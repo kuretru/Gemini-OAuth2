@@ -17,3 +17,29 @@ jobs:
       - name: Build Gemini OAuth Parent
         run: mvn --batch-mode --update-snapshots install
         working-directory: Gemini-OAuth2-Api/
+  build-frontend:
+    name: build frontend
+    runs-on: ubuntu-latest
+    env:
+      working-directory: Gemini-OAuth2-Web/
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          # cache: 'yarn'
+          # cache-dependency-path: 'Gemini-OAuth2-Web/yarn.lock'
+      - name: Dependency
+        # run: yarn install --immutable
+        run: yarn install
+        working-directory: ${{env.working-directory}}
+      - name: Lint
+        run: yarn lint
+        working-directory: ${{env.working-directory}}
+      - name: Test
+        run: yarn test
+        working-directory: ${{env.working-directory}}
+      - name: Build
+        run: yarn build
+        working-directory: ${{env.working-directory}}
