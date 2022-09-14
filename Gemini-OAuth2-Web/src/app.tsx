@@ -1,10 +1,10 @@
-import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
+import type { RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
-import { PageLoading, SettingDrawer } from '@ant-design/pro-layout';
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import RightContent from '@/components/RightContent';
-import Footer from '@/components/Footer';
+import type { Settings as LayoutSettings } from '@ant-design/pro-components';
+import { PageLoading, SettingDrawer } from '@ant-design/pro-components';
 import { LinkOutlined } from '@ant-design/icons';
+import Footer from '@/components/Footer';
+import RightContent from '@/components/RightContent';
 import defaultSettings from '../config/defaultSettings';
 import { fetchUserInfo, requestConfig } from '@/utils/app-utils';
 
@@ -71,16 +71,16 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     links: isDev
       ? [
-          <a
-            key="github"
-            target="_blank"
-            href="https://github.com/kuretru/Gemini-OAuth2"
-            rel="noreferrer"
-          >
-            <LinkOutlined />
-            <span>GitHub</span>
-          </a>,
-        ]
+        <a
+          key="github"
+          target="_blank"
+          href="https://github.com/kuretru/Gemini-OAuth2"
+          rel="noreferrer"
+        >
+          <LinkOutlined />
+          <span>GitHub</span>
+        </a>,
+      ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
@@ -93,10 +93,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
           {children}
           {!props.location?.pathname?.includes('/login') && (
             <SettingDrawer
+              disableUrlParams
               enableDarkTheme
               settings={initialState?.settings}
               onSettingChange={(settings) => {
-                setInitialState((preInitialState: any) => ({
+                setInitialState((preInitialState) => ({
                   ...preInitialState,
                   settings,
                 }));

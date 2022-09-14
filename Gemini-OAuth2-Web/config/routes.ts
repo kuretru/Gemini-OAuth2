@@ -6,8 +6,8 @@ export default [
       {
         path: '/users',
         routes: [
-          // { component: './user/Setting', name: '个人设置', path: '/users/settings' },
           { component: './user/Login', name: '登录', path: '/users/login' },
+          // { component: './user/Setting', name: '个人设置', path: '/users/settings' },
         ],
       },
     ],
@@ -15,8 +15,8 @@ export default [
   { component: './Welcome', icon: 'smile', name: '欢迎', path: '/welcome' },
   {
     icon: 'appstore',
-    path: '/oauth',
     name: 'OAuth2管理',
+    path: '/oauth',
     routes: [
       {
         access: 'isAdmin',
@@ -34,17 +34,7 @@ export default [
       },
     ],
   },
-  {
-    component: './TableList',
-    icon: 'table',
-    name: '查询表格',
-    path: '/list',
-  },
-  {
-    path: '/',
-    redirect: '/welcome',
-  },
-  {
-    component: './404',
-  },
+  { component: './TableList', icon: 'table', name: '查询表格', path: '/list', },
+  { path: '/', redirect: '/welcome', },
+  { component: './404', },
 ];

@@ -1,13 +1,13 @@
-import React from 'react';
-import { Modal } from 'antd';
 import {
+  ProFormDateTimePicker,
+  ProFormRadio,
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
   StepsForm,
-  ProFormRadio,
-  ProFormDateTimePicker,
-} from '@ant-design/pro-form';
+} from '@ant-design/pro-components';
+import { Modal } from 'antd';
+import React from 'react';
 export type FormValueType = {
   target?: string;
   template?: string;
@@ -21,7 +21,6 @@ export type UpdateFormProps = {
   updateModalVisible: boolean;
   values: Partial<API.RuleListItem>;
 };
-
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <StepsForm
@@ -152,5 +151,4 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     </StepsForm>
   );
 };
-
 export default UpdateForm;
