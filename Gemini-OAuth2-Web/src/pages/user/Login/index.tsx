@@ -9,47 +9,52 @@ import { login } from '@/services/gemini-oauth2/user/user';
 
 const Login: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
-
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
-
     if (userInfo) {
-      await setInitialState((s: any) => ({ ...s, currentUser: userInfo }));
+      await setInitialState((s: any) => ({
+        ...s,
+        currentUser: userInfo,
+      }));
     }
   };
-
   const handleSubmit = async (values: API.LoginParams) => {
     const userLoginQuery: API.User.UserLoginQuery = {
       username: values.username!,
       password: values.password!,
     };
-    const response = await login(userLoginQuery);
-    console.log(response);
+    try {
+      const response = await login(userLoginQuery);
+      console.log(response);
 
-    if (response.code === 100) {
-      const defaultLoginSuccessMessage = '登录成功！';
-      message.success(defaultLoginSuccessMessage);
-      localStorage.setItem('userId', response.data.userId);
-      localStorage.setItem('accessTokenId', response.data.accessToken.id);
-      localStorage.setItem('accessToken', response.data.accessToken.secret);
+      if (response.code === 100) {
+        const defaultLoginSuccessMessage = '登录成功！';
+        message.success(defaultLoginSuccessMessage);
+        localStorage.setItem('userId', response.data.userId);
+        localStorage.setItem('accessTokenId', response.data.accessToken.id);
+        localStorage.setItem('accessToken', response.data.accessToken.secret);
 
-      await fetchUserInfo();
+        await fetchUserInfo();
 
-      // 向redirect跳转并传递其余query参数
-      if (!history) return;
-      const { query } = history.location;
-      const { redirect } = query as {
-        redirect: string;
-      };
-      if (redirect) {
-        delete query.redirect;
-        history.push({
-          pathname: redirect,
-          query: query,
-        });
-      } else {
-        history.push('/');
+        // 向redirect跳转并传递其余query参数
+        if (!history) return;
+        const { query } = history.location;
+        const { redirect } = query as {
+          redirect: string;
+        };
+        if (redirect) {
+          delete query.redirect;
+          history.push({
+            pathname: redirect,
+            query: query,
+          });
+        } else {
+          history.push('/');
+        }
       }
+    } catch (error) {
+      const defaultLoginFailureMessage = '登录失败，请重试！';
+      message.error(defaultLoginFailureMessage);
     }
   };
 
@@ -120,5 +125,4 @@ const Login: React.FC = () => {
     </div>
   );
 };
-
 export default Login;
