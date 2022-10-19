@@ -1,8 +1,8 @@
 name: CI
 on: [ push, pull_request ]
 jobs:
-  build-backend:
-    name: build backend
+  backend:
+    name: backend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,8 +17,8 @@ jobs:
       - name: Build Gemini OAuth Parent
         run: mvn --batch-mode --update-snapshots install
         working-directory: Gemini-OAuth2-Api/
-  build-frontend:
-    name: build frontend
+  frontend:
+    name: frontend
     runs-on: ubuntu-latest
     env:
       working-directory: Gemini-OAuth2-Web/
