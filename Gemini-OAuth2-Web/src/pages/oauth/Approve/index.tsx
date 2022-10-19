@@ -1,6 +1,6 @@
 import React from 'react';
-import { GridContent } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
+import { GridContent } from '@ant-design/pro-layout';
 import { Avatar, Button, List, message, Tooltip } from 'antd';
 import {
   ArrowRightOutlined,
@@ -12,8 +12,8 @@ import {
 } from '@ant-design/icons';
 import { approve } from '@/services/gemini-oauth2/oauth2';
 import OAuthApplicationService from '@/services/gemini-oauth2/oauth/application';
-import { getRequestParams } from '@/utils/request-utils';
 import { get as getUser } from '@/services/gemini-oauth2/user/user';
+import { getRequestParams } from '@/utils/request-utils';
 import styles from './index.less';
 
 interface OAuthApproveProps {}
