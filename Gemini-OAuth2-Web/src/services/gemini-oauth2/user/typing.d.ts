@@ -17,6 +17,10 @@ declare namespace API.User {
     mobile?: string;
     isAdmin?: boolean;
   };
+  type UserVO = API.BaseDTO & {
+    nickname: string;
+    avatar: string;
+  }
 
   type UserLoginDTO = {
     userId: string;
