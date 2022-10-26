@@ -9,15 +9,28 @@ declare namespace API.OAuth {
     homepage: string;
     callback: number;
   };
-
   type OAuthApplicationQuery = API.PaginationQuery & {
     name?: string;
   };
-
-  type OAuthPermissionDTO = {
-    permission: string;
-    avatar: JSX;
-    title: string;
+  type OAuthApplicationVO = API.BaseDTO & {
+    name: string;
+    avatar: string;
     description: string;
+    homepage: string;
+  }
+
+  type OAuthPermissionDTO = API.BaseDTO & {
+    applicationId: string;
+    userId: string;
+    permissions: string[];
+  }
+  type OAuthPermissionQuery = API.PaginationQuery & {
+    applicationId: string;
+    userId: string;
+  };
+  type OAuthPermissionVO = API.BaseDTO & {
+    permissions: string[];
+    application: OAuthApplicationVO;
+    user: API.User.UserVO;
   };
 }

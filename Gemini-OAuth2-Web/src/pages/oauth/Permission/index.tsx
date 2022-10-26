@@ -3,28 +3,48 @@ import { ProFormText } from '@ant-design/pro-form';
 import type { ProColumns } from '@ant-design/pro-table';
 import { Image } from 'antd';
 import BasePage from '@/components/BasePage';
-import OAuthApplicationService from '@/services/gemini-oauth2/oauth/application';
+import OAuthPermissionService from '@/services/gemini-oauth2/oauth/permission';
 
-class OAuthApplication extends React.Component {
-  columns: ProColumns<API.OAuth.OAuthApplicationDTO>[] = [
+class OAuthPermission extends React.Component {
+  columns: ProColumns<API.OAuth.OAuthPermissionVO>[] = [
     {
       align: 'center',
-      dataIndex: 'name',
-      title: '名称',
+      dataIndex: 'application.name',
+      title: '应用',
       width: 240,
-      render: (text, record) => [
-        <Image key="avatar" src={record.avatar} width={25} height={25} />,
-        <a href={record.homepage} key="homepage" rel="noreferrer" target="_blank">
-          {record.name}
+      render: (_, record) => [
+        <Image key="avatar" src={record.application.avatar} width={25} height={25} />,
+        <a href={record.application.homepage} key="homepage" rel="noreferrer" target="_blank">
+          {record.application.name}
         </a>,
-      ],
+      ]
     },
     {
       align: 'center',
-      copyable: true,
-      dataIndex: 'description',
+      dataIndex: 'permissions',
       search: false,
-      title: '描述',
+      title: '权限',
+      render: (_, record) => {
+        const result: any[] = [];
+        record.permissions.forEach(permission => {
+          let element = "";
+          if (permission.endsWith('_w')) {
+            permission.replace('_w', '');
+            element = "修改";
+          } else {
+            element = "读取";
+          }
+
+          if (permission.startsWith("email")) {
+            element += '电子邮箱';
+          } else if (permission.startsWith("mobile")) {
+            element += '手机号码';
+          }
+
+          result.push(element);
+        })
+        return result;
+      }
     },
   ];
 
@@ -77,9 +97,9 @@ class OAuthApplication extends React.Component {
 
   render() {
     return (
-      <BasePage<API.OAuth.OAuthApplicationDTO, API.OAuth.OAuthApplicationQuery>
-        pageName="OAuth2应用"
-        service={new OAuthApplicationService()}
+      <BasePage<API.OAuth.OAuthPermissionDTO, API.OAuth.OAuthPermissionQuery>
+        pageName="我授权的应用"
+        service={new OAuthPermissionService()}
         columns={this.columns}
         formItem={this.formItem()}
       />
@@ -87,4 +107,4 @@ class OAuthApplication extends React.Component {
   }
 }
 
-export default OAuthApplication;
+export default OAuthPermission;

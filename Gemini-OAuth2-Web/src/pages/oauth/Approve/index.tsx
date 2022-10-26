@@ -16,12 +16,19 @@ import { get as getUser } from '@/services/gemini-oauth2/user/user';
 import { getRequestParams } from '@/utils/request-utils';
 import styles from './index.less';
 
-interface OAuthApproveProps {}
+type OAuthPermissionRecord = {
+  permission: string;
+  avatar: JSX;
+  title: string;
+  description: string;
+};
+
+interface OAuthApproveProps { }
 
 interface OAuthApproveState {
   application: API.OAuth.OAuthApplicationDTO;
   user: API.User.UserDTO;
-  permissions: API.OAuth.OAuthPermissionDTO[];
+  permissions: OAuthPermissionRecord[];
 }
 
 class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState> {
