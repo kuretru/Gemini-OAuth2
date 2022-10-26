@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuretru.web.gemini.mapper.OAuthPermissionMapper">
+
+    <select id="listBo" resultType="com.kuretru.web.gemini.entity.business.OAuthPermissionBO">
+        SELECT p.id,
+               p.uuid,
+               p.create_time,
+               p.update_time,
+               p.application_id,
+               p.user_id,
+               p.permissions,
+               a.`name`      as application_name,
+               a.avatar      as application_avatar,
+               a.description as application_description,
+               a.homepage    as application_homepage,
+               u.nickname    as user_nickname,
+               u.avatar      as user_avatar
+        FROM oauth_permission p
+                 INNER JOIN oauth_application a ON p.application_id = a.uuid
+                 INNER JOIN `user` u ON p.user_id = u.uuid
+        ${ew.customSqlSegment}
+    </select>
+
+</mapper>
