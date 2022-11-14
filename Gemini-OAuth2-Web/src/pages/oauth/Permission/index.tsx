@@ -4,6 +4,12 @@ import type { ProColumns } from '@ant-design/pro-table';
 import { Image } from 'antd';
 import BasePage from '@/components/BasePage';
 import OAuthPermissionService from '@/services/gemini-oauth2/oauth/permission';
+import PermissionLabel from './components/PermissionLabel';
+
+const permissionChinese = {
+  "email": "电子邮箱",
+  "mobile": "手机号码"
+};
 
 class OAuthPermission extends React.Component {
   columns: ProColumns<API.OAuth.OAuthPermissionVO>[] = [
@@ -27,21 +33,21 @@ class OAuthPermission extends React.Component {
       render: (_, record) => {
         const result: any[] = [];
         record.permissions.forEach(permission => {
-          let element = "";
+          let type = "读取";
           if (permission.endsWith('_w')) {
             permission.replace('_w', '');
-            element = "修改";
-          } else {
-            element = "读取";
+            type = "修改";
           }
 
-          if (permission.startsWith("email")) {
-            element += '电子邮箱';
-          } else if (permission.startsWith("mobile")) {
-            element += '手机号码';
+          let name = "未知";
+          for (const key in permissionChinese) {
+            if (permission.startsWith(key)) {
+              name = permissionChinese[key];
+              break;
+            }
           }
 
-          result.push(element);
+          result.push(<PermissionLabel type={type} name={name} />);
         })
         return result;
       }
