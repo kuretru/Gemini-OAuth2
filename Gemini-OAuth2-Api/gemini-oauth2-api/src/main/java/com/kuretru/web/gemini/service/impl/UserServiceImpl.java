@@ -16,6 +16,7 @@ import com.kuretru.web.gemini.entity.query.UserQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;
 import com.kuretru.web.gemini.mapper.UserMapper;
 import com.kuretru.web.gemini.service.UserService;
+import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,8 +36,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
     private final AccessTokenManager accessTokenManager;
 
     @Autowired
-    public UserServiceImpl(UserMapper mapper, PasswordEncoder passwordEncoder, AccessTokenManager accessTokenManager) {
-        super(mapper, UserDO.class, UserDTO.class);
+    public UserServiceImpl(UserMapper mapper, UserEntityMapper entityMapper, PasswordEncoder passwordEncoder, AccessTokenManager accessTokenManager) {
+        super(mapper, entityMapper);
         this.passwordEncoder = passwordEncoder;
         this.accessTokenManager = accessTokenManager;
     }
@@ -89,6 +90,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
             result.add(RoleConstants.ADMIN);
         }
         return result;
+    }
+
+    @Mapper(componentModel = "spring")
+    interface UserEntityMapper extends BaseServiceImpl.BaseEntityMapper<UserDO, UserDTO> {
+
     }
 
 }
