@@ -7,7 +7,6 @@ import com.kuretru.web.gemini.entity.query.OAuthApplicationQuery;
 import com.kuretru.web.gemini.entity.transfer.OAuthApplicationDTO;
 import com.kuretru.web.gemini.mapper.OAuthApplicationMapper;
 import com.kuretru.web.gemini.service.OAuthApplicationService;
-import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,8 +18,8 @@ import org.springframework.util.StringUtils;
 public class OAuthApplicationServiceImpl extends BaseServiceImpl<OAuthApplicationMapper, OAuthApplicationDO, OAuthApplicationDTO, OAuthApplicationQuery> implements OAuthApplicationService {
 
     @Autowired
-    public OAuthApplicationServiceImpl(OAuthApplicationMapper mapper, OAuthApplicationEntityMapper entityMapper) {
-        super(mapper, entityMapper);
+    public OAuthApplicationServiceImpl(OAuthApplicationMapper mapper) {
+        super(mapper, OAuthApplicationDO.class, OAuthApplicationDTO.class);
     }
 
     @Override
@@ -28,7 +27,7 @@ public class OAuthApplicationServiceImpl extends BaseServiceImpl<OAuthApplicatio
         QueryWrapper<OAuthApplicationDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("client_id", clientId);
         OAuthApplicationDO record = mapper.selectOne(queryWrapper);
-        return entityMapper.doToDto(record);
+        return doToDto(record);
     }
 
     @Override
@@ -46,11 +45,6 @@ public class OAuthApplicationServiceImpl extends BaseServiceImpl<OAuthApplicatio
             return redirectUri.startsWith(record.getCallback());
         }
         return true;
-    }
-
-    @Mapper(componentModel = "spring")
-    interface OAuthApplicationEntityMapper extends BaseServiceImpl.BaseEntityMapper<OAuthApplicationDO, OAuthApplicationDTO> {
-
     }
 
 }
