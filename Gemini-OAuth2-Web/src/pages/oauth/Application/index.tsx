@@ -1,9 +1,9 @@
 import React from 'react';
-import { ProFormText } from '@ant-design/pro-form';
 import type { ProColumns } from '@ant-design/pro-table';
+import { ProFormText } from '@ant-design/pro-form';
 import { Image } from 'antd';
-import BasePage from '@/components/BasePage';
 import OAuthApplicationService from '@/services/gemini-oauth2/oauth/application';
+import BasePage from '@/components/BasePage';
 
 class OAuthApplication extends React.Component {
   columns: ProColumns<API.OAuth.OAuthApplicationDTO>[] = [

@@ -25,11 +25,6 @@ export default [
         path: '/oauth/applications',
       },
       {
-        component: './oauth/Permission',
-        name: '授权管理',
-        path: '/oauth/permissions',
-      },
-      {
         component: './oauth/Approve',
         name: 'OAuth2授权',
         path: '/oauth/approve',
