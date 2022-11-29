@@ -1,41 +1,21 @@
 import React from 'react';
-import type { ActionType, ProFormInstance } from '@ant-design/pro-components';
-import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { ProFormText } from '@ant-design/pro-form';
 import type { ProColumns } from '@ant-design/pro-table';
-import { Button, Image, message, Modal } from 'antd';
-import { DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { Image } from 'antd';
+import BasePage from '@/components/BasePage';
 import OAuthPermissionService from '@/services/gemini-oauth2/oauth/permission';
 import PermissionLabel from './components/PermissionLabel';
-
-const { confirm } = Modal;
 
 const permissionChinese = {
   "email": "电子邮箱",
   "mobile": "手机号码"
 };
 
-interface OAuthPermissionProps {
-
-}
-
-interface OAuthPermissionState {
-  tableLoading: boolean;
-}
-
-class OAuthPermission extends React.Component<OAuthPermissionProps, OAuthPermissionState>  {
+class OAuthPermission extends React.Component {
   columns: ProColumns<API.OAuth.OAuthPermissionVO>[] = [
     {
       align: 'center',
-      key: 'index',
-      title: '序号',
-      valueType: 'indexBorder',
-      width: 60,
-    },
-    {
-      align: 'center',
-      dataIndex: 'applicationName',
-      search: false,
+      dataIndex: 'application.name',
       title: '应用',
       width: 240,
       render: (_, record) => [
@@ -72,40 +52,7 @@ class OAuthPermission extends React.Component<OAuthPermissionProps, OAuthPermiss
         return result;
       }
     },
-    {
-      align: 'center',
-      key: 'action',
-      title: '操作',
-      valueType: 'option',
-      width: 240,
-      render: (_, record) => {
-        return [
-          <Button
-            danger
-            icon={<DeleteOutlined />}
-            key="delete"
-            onClick={() => this.onDeleteButtonClick(record.id!)}
-            type="primary"
-          >
-            取消授权
-          </Button>,
-        ];
-      },
-    },
   ];
-  service: OAuthPermissionService;
-  formRef: React.MutableRefObject<ProFormInstance>;
-  tableRef: React.RefObject<ActionType>;
-
-  constructor(props: Record<string, unknown>) {
-    super(props);
-    this.state = {
-      tableLoading: false,
-    };
-    this.service = new OAuthPermissionService();
-    this.formRef = React.createRef<ProFormInstance>() as React.MutableRefObject<ProFormInstance>;
-    this.tableRef = React.createRef<ActionType>();
-  }
 
   formItem = () => {
     return (
@@ -154,52 +101,14 @@ class OAuthPermission extends React.Component<OAuthPermissionProps, OAuthPermiss
     );
   };
 
-  fetchData = async (params: API.PaginationQuery) => {
-    return this.service
-      .listByPage(params)
-      .catch((error: any) => message.error(error.message));
-  };
-
-  onDeleteButtonClick = (id: string) => {
-    const messageKey = 'delete';
-    const _this = this;
-    confirm({
-      title: `确定删除这条授权记录吗？`,
-      icon: <QuestionCircleOutlined />,
-      okType: 'danger',
-      onOk() {
-        message.loading({ content: '请求处理中...', duration: 0, key: messageKey });
-        _this.service
-          .remove(id)
-          .then(() => {
-            _this.tableRef.current?.reload();
-            message.success({ content: '删除成功！', key: messageKey });
-          })
-          .catch((error: any) => {
-            message.destroy(messageKey);
-            message.error(error.message);
-          });
-      },
-    });
-  };
-
   render() {
     return (
-      <PageContainer>
-        <ProTable<API.OAuth.OAuthPermissionVO>
-          actionRef={this.tableRef}
-          bordered
-          columns={this.columns}
-          headerTitle={"我授权的应用"}
-          loading={this.state.tableLoading}
-          options={{ fullScreen: true, setting: true }}
-          pagination={{ defaultPageSize: 20 }}
-          request={this.fetchData}
-          rowKey="id"
-          search={false}
-          tooltip={"我授权的应用"}
-        />
-      </PageContainer>
+      <BasePage<API.OAuth.OAuthPermissionDTO, API.OAuth.OAuthPermissionQuery>
+        pageName="我授权的应用"
+        service={new OAuthPermissionService()}
+        columns={this.columns}
+        formItem={this.formItem()}
+      />
     );
   }
 }
