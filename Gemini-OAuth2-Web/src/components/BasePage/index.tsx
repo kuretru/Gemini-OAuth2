@@ -194,9 +194,6 @@ abstract class BasePage<T extends API.BaseDTO, Q> extends React.Component<
         />
         <ModalForm<T>
           formRef={this.formRef}
-          modalProps={{
-            forceRender: true
-          }}
           onFinish={this.onFormFinish}
           onValuesChange={this.onFormValuesChange}
           onVisibleChange={(visible) => this.setState({ modalVisible: visible })}
