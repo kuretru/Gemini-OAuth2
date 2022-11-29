@@ -10,7 +10,7 @@ import {
   PhoneOutlined,
   SmileOutlined,
 } from '@ant-design/icons';
-import { approve } from '@/services/gemini-oauth2/oauth2';
+import { approve, isApproved } from '@/services/gemini-oauth2/oauth2';
 import OAuthApplicationService from '@/services/gemini-oauth2/oauth/application';
 import { get as getUser } from '@/services/gemini-oauth2/user/user';
 import { getRequestParams } from '@/utils/request-utils';
@@ -18,12 +18,10 @@ import styles from './index.less';
 
 type OAuthPermissionRecord = {
   permission: string;
-  avatar: JSX;
+  avatar: JSX.Element;
   title: string;
   description: string;
 };
-
-interface OAuthApproveProps { }
 
 interface OAuthApproveState {
   application: API.OAuth.OAuthApplicationDTO;
@@ -31,15 +29,15 @@ interface OAuthApproveState {
   permissions: OAuthPermissionRecord[];
 }
 
-class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState> {
+class OAuthApprove extends React.Component<Record<string, never>, OAuthApproveState> {
   oAuthApplicationService: OAuthApplicationService = new OAuthApplicationService();
   requestParams = getRequestParams();
 
-  constructor(props: OAuthApproveProps) {
+  constructor(props: Record<string, never>) {
     super(props);
     this.state = {
-      application: { name: '', avatar: '', description: '', homepage: '', callback: 0 },
-      user: { username: '', nickname: '', avatar: '', email: '', mobile: '', isAdmin: false },
+      application: {} as API.OAuth.OAuthApplicationDTO,
+      user: {} as API.User.UserDTO,
       permissions: [
         {
           permission: '',
@@ -49,20 +47,11 @@ class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState>
         },
       ],
     };
-    this.getApplication();
     this.getPermissions();
+    this.getApplication().then(() => {
+      this.autoApprove();
+    });
   }
-
-  getApplication = async () => {
-    if (!this.requestParams.application_id) {
-      message.error('OAuth应用ID不存在');
-      return;
-    }
-    const application = await this.oAuthApplicationService.get(this.requestParams.application_id);
-    const userId = localStorage.getItem('userId');
-    const user = await getUser(userId!);
-    this.setState({ application: application.data, user: user.data });
-  };
 
   getPermissions = () => {
     const scopes: string[] = this.requestParams.scope ? this.requestParams.scope.split(',') : [];
@@ -85,6 +74,39 @@ class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState>
     }
   };
 
+  getApplication = async () => {
+    if (!this.requestParams.application_id) {
+      message.error('OAuth应用ID不存在');
+      return;
+    }
+    const application = await this.oAuthApplicationService.get(this.requestParams.application_id);
+    const userId = localStorage.getItem('userId');
+    const user = await getUser(userId!);
+    this.setState({ application: application.data, user: user.data });
+  };
+
+  autoApprove = async () => {
+    if (this.requestParams.reapprove) {
+      message.info('需要重新授权');
+      console.log("自动授权失败：强制重新授权");
+      return;
+    }
+    const params: API.OAuth2.OAuth2ApproveQuery = {
+      token: this.requestParams.token,
+      applicationId: this.requestParams.application_id,
+      userId: localStorage.getItem('userId')!,
+      scope: this.requestParams.scope,
+    };
+    isApproved(params)
+      .then((response) => {
+        console.log(response);
+        window.location.href = response.data;
+      })
+      .catch(() => {
+        console.log("自动授权失败：用户尚未授权");
+      });
+  };
+
   userApprove = async (action: string) => {
     const params: API.OAuth2.OAuth2ApproveRequestDTO = {
       token: this.requestParams.token,
@@ -99,7 +121,10 @@ class OAuthApprove extends React.Component<OAuthApproveProps, OAuthApproveState>
   };
 
   actionbutton = [
-    <Button key="reject" icon={<CloseCircleOutlined />} onClick={() => this.userApprove('reject')}>
+    <Button
+      key="reject"
+      icon={<CloseCircleOutlined />}
+      onClick={() => this.userApprove('reject')}>
       拒绝
     </Button>,
     <Button
