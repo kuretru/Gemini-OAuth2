@@ -45,7 +45,6 @@ public class OAuth2ServerController extends BaseController {
     @SneakyThrows(IOException.class)
     public void authorize(@Validated OAuth2AuthorizeDTO.Request request) throws OAuth2Exception {
         String redirectUrl = manager.authorize(request);
-        // TODO: handle CORS gracefully
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Access-Control-Allow-Credentials", "true");

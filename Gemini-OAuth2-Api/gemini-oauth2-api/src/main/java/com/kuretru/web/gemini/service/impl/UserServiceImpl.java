@@ -9,7 +9,6 @@ import com.kuretru.microservices.authentication.manager.AccessTokenManager;
 import com.kuretru.microservices.web.constant.code.UserErrorCodes;
 import com.kuretru.microservices.web.exception.ServiceException;
 import com.kuretru.microservices.web.service.impl.BaseServiceImpl;
-import com.kuretru.web.gemini.constant.RoleConstants;
 import com.kuretru.web.gemini.entity.data.UserDO;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.query.UserQuery;
@@ -86,7 +85,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
     private Set<String> buildRoles(UserDO userDO) {
         Set<String> result = new HashSet<>();
         if (userDO.getAdmin()) {
-            result.add(RoleConstants.ADMIN);
+            result.add("admin");
         }
         return result;
     }

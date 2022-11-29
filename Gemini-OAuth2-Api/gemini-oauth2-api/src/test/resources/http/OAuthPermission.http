@@ -1,5 +1,0 @@
-### List
-GET {{url}}/oauth/permissions?current=1&page_size=20&user_id={{userId}}
-Content-Type: application/json
-Access-Token-ID: {{access-token-id}}
-Access-Token: {{access-token-secret}}
