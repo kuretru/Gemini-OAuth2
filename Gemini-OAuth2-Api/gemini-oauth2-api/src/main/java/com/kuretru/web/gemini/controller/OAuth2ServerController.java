@@ -53,14 +53,14 @@ public class OAuth2ServerController extends BaseController {
     }
 
     /**
-     * 前端查询用户是否已授权过，若已授权则直接重定向回Application服务器
+     * 前端查询用户是否已授权过，若已授权则可用直接重定向回Application服务器
      *
      * @param query 请求实体
      * @throws ServiceException 若未授权，则抛出异常，前端应提示用户授权
      */
-    @GetMapping("/approve")
+    @PostMapping("/is_approved")
     @RequireAuthorization
-    public ApiResponse<?> isApproved(@Validated OAuth2ApproveQuery query) throws ServiceException {
+    public ApiResponse<?> isApproved(@Validated @RequestBody OAuth2ApproveQuery query) throws ServiceException {
         verifyUserId(query);
         return ApiResponse.success(manager.isApproved(query));
     }
