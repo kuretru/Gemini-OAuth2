@@ -1,0 +1,15 @@
+[Unit]
+Description=Gemini-OAuth2-API
+After=syslog.target
+
+[Service]
+User=nginx
+EnvironmentFile=/home/nginx/oauth2.i5zhen.com/api/environment
+WorkingDirectory=/home/nginx/oauth2.i5zhen.com/api/
+ExecStart=/usr/bin/java -Xmx256m -jar /home/nginx/oauth2.i5zhen.com/api/gemini-oauth2-api.jar --spring.profiles.active=production
+SuccessExitStatus=143
+StandardOutput=append:/home/nginx/oauth2.i5zhen.com/log/api.log
+StandardError=append:/home/nginx/oauth2.i5zhen.com/log/api.log
+
+[Install]
+WantedBy=multi-user.target
