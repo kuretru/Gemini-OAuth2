@@ -1,7 +1,7 @@
 import BaseService from '../base-service';
 
 class OAuthPermissionService extends BaseService<
-  API.OAuth.OAuthPermissionDTO,
+  API.OAuth.OAuthPermissionVO,
   API.OAuth.OAuthPermissionQuery
 > {
   constructor() {
