@@ -39,7 +39,6 @@ export default [
       },
     ],
   },
-  { component: './TableList', icon: 'table', name: '查询表格', path: '/list', },
   { path: '/', redirect: '/welcome', },
   { component: './404', },
 ];
