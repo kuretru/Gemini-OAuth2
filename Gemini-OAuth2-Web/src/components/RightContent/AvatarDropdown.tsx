@@ -1,10 +1,10 @@
+import React, { useCallback } from 'react';
+import { history, useModel } from 'umi';
+import { Avatar, Menu, message, Spin } from 'antd';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Menu, Spin } from 'antd';
 import type { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { stringify } from 'querystring';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import React, { useCallback } from 'react';
-import { history, useModel } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import { logout } from '@/services/gemini-oauth2/user/user';
 import styles from './index.less';
