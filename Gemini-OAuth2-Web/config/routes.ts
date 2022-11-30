@@ -13,6 +13,7 @@ export default [
     ],
   },
   { component: './Welcome', icon: 'smile', name: '欢迎', path: '/welcome' },
+  { component: './dashboard', icon: 'areaChart', name: '仪表盘', path: '/dashboard' },
   {
     icon: 'appstore',
     name: 'OAuth2管理',
