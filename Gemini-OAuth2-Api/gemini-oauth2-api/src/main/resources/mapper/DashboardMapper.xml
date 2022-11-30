@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuretru.web.gemini.mapper.DashboardMapper">
+
+    <select id="selectSystemStatistics" resultType="com.kuretru.web.gemini.entity.business.SystemStatisticsBO">
+        SELECT sum(tmp.application_count) AS application_count,
+               sum(tmp.user_count)        AS user_count,
+               sum(tmp.permission_count)  AS permission_count
+        FROM (SELECT count(*) AS application_count,
+                     0           user_count,
+                     0           permission_count
+              FROM oauth_application
+              UNION ALL
+              SELECT 0           application_count,
+                     count(*) AS user_count,
+                     0           permission_count
+              FROM `user`
+              UNION ALL
+              SELECT 0           application_count,
+                     0           user_count,
+                     count(*) AS permission_count
+              FROM oauth_permission) tmp
+    </select>
+
+</mapper>

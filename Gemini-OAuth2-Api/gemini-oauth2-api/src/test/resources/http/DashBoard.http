@@ -1,0 +1,4 @@
+### SystemStatistics
+
+GET {{url}}/dashboard/statistics
+Content-Type: application/json
