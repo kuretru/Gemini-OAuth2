@@ -46,7 +46,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         loginOut();
         return;
       }
-      history.push(`/account/${key}`);
+      history.push(`/users/${key}`);
     },
     [setInitialState],
   );
@@ -74,11 +74,6 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   const menuItems: ItemType[] = [
     ...(menu
       ? [
-        {
-          icon: <UserOutlined />,
-          key: 'center',
-          label: '个人中心',
-        },
         {
           icon: <SettingOutlined />,
           key: 'settings',
