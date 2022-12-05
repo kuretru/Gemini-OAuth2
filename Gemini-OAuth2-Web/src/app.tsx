@@ -1,4 +1,4 @@
-import type { RunTimeLayoutConfig } from 'umi';
+import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { PageLoading, SettingDrawer } from '@ant-design/pro-components';
@@ -69,19 +69,17 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         });
       }
     },
-    links: isDev
-      ? [
-        <a
-          key="github"
-          target="_blank"
-          href="https://github.com/kuretru/Gemini-OAuth2"
-          rel="noreferrer"
-        >
-          <LinkOutlined />
-          <span>GitHub</span>
-        </a>,
-      ]
-      : [],
+    links: [
+      <a
+        key="github"
+        target="_blank"
+        href="https://github.com/kuretru/Gemini-OAuth2"
+        rel="noreferrer"
+      >
+        <LinkOutlined />
+        <span>GitHub</span>
+      </a>,
+    ],
     menuHeaderRender: undefined,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
@@ -91,7 +89,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       return (
         <>
           {children}
-          {!props.location?.pathname?.includes('/login') && (
+          {!props.location?.pathname?.includes('/login') && isDev && (
             <SettingDrawer
               disableUrlParams
               enableDarkTheme
