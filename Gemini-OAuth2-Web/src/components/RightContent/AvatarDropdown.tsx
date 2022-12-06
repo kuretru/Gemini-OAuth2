@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { history, useModel } from 'umi';
 import { Avatar, Menu, message, Spin } from 'antd';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import type { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { stringify } from 'querystring';
 import type { MenuInfo } from 'rc-menu/lib/interface';

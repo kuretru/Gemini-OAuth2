@@ -76,17 +76,18 @@ abstract class BaseTableOnlyPage<T extends API.BaseDTO, Q extends API.Pagination
 
   onDeleteButtonClick = (id: string) => {
     const messageKey = 'delete';
-    const _this = this;
+    const service = this.props.service;
+    const tableRef = this.tableRef;
     confirm({
       title: `确定删除这个${this.props.pageName}吗？`,
       icon: <QuestionCircleOutlined />,
       okType: 'danger',
       onOk() {
         message.loading({ content: '请求处理中...', duration: 0, key: messageKey });
-        _this.props.service
+        service
           .remove(id)
           .then(() => {
-            _this.tableRef.current?.reload();
+            tableRef.current?.reload();
             message.success({ content: '删除成功！', key: messageKey });
           })
           .catch((error: any) => {
