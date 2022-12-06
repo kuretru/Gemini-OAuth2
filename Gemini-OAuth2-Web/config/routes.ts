@@ -1,14 +1,9 @@
 export default [
   {
-    layout: false, path: '/users',
+    path: '/users',
     routes: [
-      {
-        path: '/users',
-        routes: [
-          { component: './user/Login', name: '登录', path: '/users/login' },
-          { component: './user/Setting', name: '个人设置', path: '/users/settings' },
-        ],
-      },
+      { component: './user/Login', layout: false, name: '登录', path: '/users/login' },
+      { component: './user/Setting', name: '个人设置', path: '/users/settings' },
     ],
   },
   { component: './Welcome', icon: 'smile', name: '欢迎', path: '/welcome' },
