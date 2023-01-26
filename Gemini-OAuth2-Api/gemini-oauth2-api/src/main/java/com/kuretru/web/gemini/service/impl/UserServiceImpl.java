@@ -17,6 +17,7 @@ import com.kuretru.web.gemini.entity.transfer.UserDTO;
 import com.kuretru.web.gemini.mapper.UserMapper;
 import com.kuretru.web.gemini.service.UserService;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -92,7 +93,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
         return result;
     }
 
-    @Mapper(componentModel = "spring")
+    @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
     interface UserEntityMapper extends BaseServiceImpl.BaseEntityMapper<UserDO, UserDTO> {
 
     }

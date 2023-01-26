@@ -8,6 +8,7 @@ import com.kuretru.web.gemini.entity.transfer.OAuthApplicationDTO;
 import com.kuretru.web.gemini.mapper.OAuthApplicationMapper;
 import com.kuretru.web.gemini.service.OAuthApplicationService;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -48,7 +49,7 @@ public class OAuthApplicationServiceImpl extends BaseServiceImpl<OAuthApplicatio
         return true;
     }
 
-    @Mapper(componentModel = "spring")
+    @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
     interface OAuthApplicationEntityMapper extends BaseServiceImpl.BaseEntityMapper<OAuthApplicationDO, OAuthApplicationDTO> {
 
     }
