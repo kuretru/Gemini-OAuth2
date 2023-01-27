@@ -9,6 +9,8 @@ import lombok.ToString;
 import javax.validation.constraints.NotNull;
 
 /**
+ * 用户DTO
+ *
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @Data

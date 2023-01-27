@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * OAuth应用DTO
+ *
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @Data

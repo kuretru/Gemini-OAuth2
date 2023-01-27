@@ -1,6 +1,7 @@
 package com.kuretru.web.gemini.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.kuretru.microservices.authentication.context.AccessTokenContext;
 import com.kuretru.microservices.authentication.entity.AccessTokenBO;
 import com.kuretru.microservices.authentication.entity.AccessTokenDTO;
@@ -14,6 +15,7 @@ import com.kuretru.web.gemini.entity.data.UserDO;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.query.UserQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;
+import com.kuretru.web.gemini.entity.transfer.UserInformationDTO;
 import com.kuretru.web.gemini.mapper.UserMapper;
 import com.kuretru.web.gemini.service.UserService;
 import org.mapstruct.Mapper;
@@ -72,6 +74,26 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
         accessTokenManager.revoke(accessTokenId);
     }
 
+    @Override
+    public UserInformationDTO getInformation() {
+        UUID userId = AccessTokenContext.getUserId();
+        QueryWrapper<UserDO> queryWrap = new QueryWrapper<>();
+        queryWrap.eq("uuid", userId.toString());
+        UserDO record = mapper.selectOne(queryWrap);
+        return ((UserEntityMapper)entityMapper).doToInformationDto(record);
+    }
+
+    @Override
+    public UserInformationDTO saveInformation(UserInformationDTO record) {
+        UUID userId = AccessTokenContext.getUserId();
+        UserDO data = ((UserEntityMapper)entityMapper).informationDtoToDo(record);
+        data.setUuid(userId.toString());
+        UpdateWrapper<UserDO> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("uuid", data.getUuid());
+        mapper.update(data, updateWrapper);
+        return getInformation();
+    }
+
     private UserDO getByUsernameOrEmailOrMobile(String username) {
         QueryWrapper<UserDO> queryWrapper = new QueryWrapper<>();
         queryWrapper
@@ -95,6 +117,22 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
 
     @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
     interface UserEntityMapper extends BaseServiceImpl.BaseEntityMapper<UserDO, UserDTO> {
+
+        /**
+         * 用户DO转用户基本信息DTO
+         *
+         * @param record 用户DO
+         * @return 用户基本信息DTO
+         */
+        UserInformationDTO doToInformationDto(UserDO record);
+
+        /**
+         * 用户基本信息DTO转用户DO
+         *
+         * @param record 用户基本信息DTO
+         * @return 用户DO
+         */
+        UserDO informationDtoToDo(UserInformationDTO record);
 
     }
 

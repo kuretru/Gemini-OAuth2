@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
+ * OAuth权限DTO
+ *
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @Data

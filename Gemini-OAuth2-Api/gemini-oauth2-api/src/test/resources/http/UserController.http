@@ -20,6 +20,25 @@ Access-Token-ID: {{access-token-id}}
 Access-Token: {{access-token-secret}}
 
 
+### 获取用户基本信息
+GET {{url}}/users/{{userId}}/information
+Content-Type: application/json
+Access-Token-ID: {{access-token-id}}
+Access-Token: {{access-token-secret}}
+
+
+### 更新用户基本信息
+PUT {{url}}/users/{{userId}}/information
+Content-Type: application/json
+Access-Token-ID: {{access-token-id}}
+Access-Token: {{access-token-secret}}
+
+{
+  "nickname": "呉真",
+  "avatar": "https://avatars.githubusercontent.com/u/13750214?s=400&u=689664180e4eac1904799b5939b0577887c49241&v=4"
+}
+
+
 ### OAuth2 GET
 GET {{url}}/users
 Content-Type: application/json

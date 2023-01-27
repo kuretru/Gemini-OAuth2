@@ -14,9 +14,11 @@ import com.kuretru.microservices.web.entity.ApiResponse;
 import com.kuretru.microservices.web.exception.ServiceException;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;
+import com.kuretru.web.gemini.entity.transfer.UserInformationDTO;
 import com.kuretru.web.gemini.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -59,17 +61,26 @@ public class UserController extends BaseController {
     @GetMapping("/{id}")
     @RequireAuthorization
     public ApiResponse<?> get(@PathVariable("id") UUID id) throws ServiceException {
-        if (id == null || EmptyConstants.EMPTY_UUID.equals(id)) {
-            throw ServiceException.build(UserErrorCodes.REQUEST_PARAMETER_ERROR, "未指定ID或ID错误");
-        }
-        if (!id.equals(AccessTokenContext.getUserId())) {
-            throw ServiceException.build(UserErrorCodes.REQUEST_PARAMETER_ERROR, "请勿操作别人的数据");
-        }
+        validUserId(id);
         UserDTO result = service.get(id);
-        if (null == result) {
+        if (result == null) {
             throw ServiceException.build(UserErrorCodes.REQUEST_PARAMETER_ERROR, "指定资源不存在");
         }
         return ApiResponse.success(result);
+    }
+
+    @GetMapping("/{id}/information")
+    @RequireAuthorization
+    public ApiResponse<?> getInformation(@PathVariable("id") UUID id) throws ServiceException {
+        validUserId(id);
+        return ApiResponse.success(service.getInformation());
+    }
+
+    @PutMapping("/{id}/information")
+    @RequireAuthorization
+    public ApiResponse<?> updateInformation(@PathVariable("id") UUID id, @Validated @RequestBody UserInformationDTO record) throws ServiceException {
+        validUserId(id);
+        return ApiResponse.success(service.saveInformation(record));
     }
 
     @PostMapping("/login")
@@ -82,6 +93,15 @@ public class UserController extends BaseController {
     public ApiResponse<?> logout(@RequestBody AccessTokenDTO accessToken) {
         service.logout(accessToken.getId());
         return ApiResponse.success("已退出登录...");
+    }
+
+    private void validUserId(UUID id) throws ServiceException {
+        if (id == null || EmptyConstants.EMPTY_UUID.equals(id)) {
+            throw ServiceException.build(UserErrorCodes.REQUEST_PARAMETER_ERROR, "未指定ID或ID错误");
+        }
+        if (!id.equals(AccessTokenContext.getUserId())) {
+            throw ServiceException.build(UserErrorCodes.REQUEST_PARAMETER_ERROR, "请勿操作别人的数据");
+        }
     }
 
 }

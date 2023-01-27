@@ -6,6 +6,7 @@ import com.kuretru.microservices.web.service.BaseService;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.query.UserQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;
+import com.kuretru.web.gemini.entity.transfer.UserInformationDTO;
 
 /**
  * @author 呉真(kuretru) <kuretru@gmail.com>
@@ -28,5 +29,20 @@ public interface UserService extends BaseService<UserDTO, UserQuery> {
      * @throws ServiceException 登出失败时会产生异常
      */
     void logout(String accessTokenId) throws ServiceException;
+
+    /**
+     * 查询用户基本信息
+     *
+     * @return 用户基本信息
+     */
+    UserInformationDTO getInformation();
+
+    /**
+     * 更新用户基本信息
+     *
+     * @param record 用户基本信息
+     * @return 用户基本信息
+     */
+    UserInformationDTO saveInformation(UserInformationDTO record);
 
 }
