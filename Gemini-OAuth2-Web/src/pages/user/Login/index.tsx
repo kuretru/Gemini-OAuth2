@@ -43,7 +43,7 @@ const Login: React.FC = () => {
           redirect: string;
         };
         if (redirect) {
-          delete query.redirect;
+          delete query!.redirect;
           history.push({
             pathname: redirect,
             query: query,

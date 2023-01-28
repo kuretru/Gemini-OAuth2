@@ -43,7 +43,7 @@ const accessTokenInterceptor = (url: string, options: RequestOptionsInit) => {
   }
   const authHeader = {
     'Access-Token-ID': id,
-    'Access-Token': localStorage.getItem('accessToken'),
+    'Access-Token': localStorage.getItem('accessToken')!,
   };
   return {
     url: `${url}`,

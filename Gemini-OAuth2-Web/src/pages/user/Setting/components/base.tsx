@@ -55,7 +55,7 @@ const BaseView: React.FC = () => {
         message.success({ content: '更新基本信息成功', key: messageKey });
 
         // 更新右上角昵称及头像
-        initialState?.fetchUserInfo?.().then((userInfo: API.User.UserDTO) => {
+        initialState?.fetchUserInfo?.().then((userInfo: any) => {
           setInitialState((s: any) => ({
             ...s,
             currentUser: userInfo,

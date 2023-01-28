@@ -16,7 +16,7 @@ import type BaseService from '@/services/gemini-oauth2/base-service';
 
 const { confirm } = Modal;
 
-interface IBasePageProps<T extends API.BaseDTO, Q> {
+interface IBasePageProps<T extends API.BaseDTO, Q extends API.PaginationQuery> {
   pageName: string;
   service: BaseService<T, Q>;
   columns: ProColumns<T>[];
@@ -33,10 +33,10 @@ interface IBasePageState {
   tableLoading: boolean;
 }
 
-abstract class BasePage<T extends API.BaseDTO, Q> extends React.Component<
-  IBasePageProps<T, Q>,
-  IBasePageState
-> {
+abstract class BasePage<
+  T extends API.BaseDTO,
+  Q extends API.PaginationQuery,
+> extends React.Component<IBasePageProps<T, Q>, IBasePageState> {
   columnsPrefix: ProColumns<T>[] = [
     {
       align: 'center',
