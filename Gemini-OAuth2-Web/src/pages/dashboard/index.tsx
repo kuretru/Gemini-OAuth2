@@ -1,11 +1,10 @@
-import { useRequest } from "umi";
-import { PageContainer, ProCard, Statistic } from "@ant-design/pro-components";
-import { Divider } from "antd";
-import { statistics } from "@/services/gemini-oauth2/dashboard/dashboard";
+import { useRequest } from 'umi';
+import { PageContainer, ProCard, Statistic } from '@ant-design/pro-components';
+import { Divider } from 'antd';
+import { statistics } from '@/services/gemini-oauth2/dashboard/dashboard';
 
 const Dashboard: React.FC = () => {
-
-  const { data } = useRequest(statistics)
+  const { data } = useRequest(statistics);
 
   return (
     <PageContainer>
@@ -23,6 +22,6 @@ const Dashboard: React.FC = () => {
         </ProCard>
       </ProCard.Group>
     </PageContainer>
-  )
-}
+  );
+};
 export default Dashboard;

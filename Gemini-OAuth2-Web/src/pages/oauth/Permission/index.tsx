@@ -6,8 +6,8 @@ import OAuthPermissionService from '@/services/gemini-oauth2/oauth/permission';
 import PermissionLabel from './components/PermissionLabel';
 
 const permissionChinese = {
-  "email": "电子邮箱",
-  "mobile": "手机号码"
+  email: '电子邮箱',
+  mobile: '手机号码',
 };
 
 class OAuthPermission extends React.Component {
@@ -23,7 +23,7 @@ class OAuthPermission extends React.Component {
         <a href={record.application.homepage} key="homepage" rel="noreferrer" target="_blank">
           {record.application.name}
         </a>,
-      ]
+      ],
     },
     {
       align: 'center',
@@ -32,14 +32,14 @@ class OAuthPermission extends React.Component {
       title: '权限',
       render: (_, record) => {
         const result: any[] = [];
-        record.permissions.forEach(permission => {
-          let type = "读取";
+        record.permissions.forEach((permission) => {
+          let type = '读取';
           if (permission.endsWith('_w')) {
             permission.replace('_w', '');
-            type = "修改";
+            type = '修改';
           }
 
-          let name = "未知";
+          let name = '未知';
           for (const key in permissionChinese) {
             if (permission.startsWith(key)) {
               name = permissionChinese[key];
@@ -48,9 +48,9 @@ class OAuthPermission extends React.Component {
           }
 
           result.push(<PermissionLabel type={type} name={name} />);
-        })
+        });
         return result;
-      }
+      },
     },
   ];
 
@@ -60,7 +60,7 @@ class OAuthPermission extends React.Component {
         pageName="我授权的应用"
         service={new OAuthPermissionService()}
         columns={this.columns}
-        deleteButtonText={"取消授权"}
+        deleteButtonText={'取消授权'}
         search={false}
       />
     );

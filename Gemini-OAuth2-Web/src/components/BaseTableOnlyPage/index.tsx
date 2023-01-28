@@ -3,10 +3,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, message, Modal } from 'antd';
-import {
-  DeleteOutlined,
-  QuestionCircleOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import type BaseService from '@/services/gemini-oauth2/base-service';
 
 const { confirm } = Modal;
@@ -23,10 +20,10 @@ interface IBasePageState {
   tableLoading: boolean;
 }
 
-abstract class BaseTableOnlyPage<T extends API.BaseDTO, Q extends API.PaginationQuery> extends React.Component<
-  IBasePageProps<T, Q>,
-  IBasePageState
-> {
+abstract class BaseTableOnlyPage<
+  T extends API.BaseDTO,
+  Q extends API.PaginationQuery,
+> extends React.Component<IBasePageProps<T, Q>, IBasePageState> {
   columnsPrefix: ProColumns<T>[] = [
     {
       align: 'center',
@@ -52,7 +49,7 @@ abstract class BaseTableOnlyPage<T extends API.BaseDTO, Q extends API.Pagination
             onClick={() => this.onDeleteButtonClick(record.id!)}
             type="primary"
           >
-            {this.props.deleteButtonText ?? "删除"}
+            {this.props.deleteButtonText ?? '删除'}
           </Button>,
         ];
       },

@@ -17,13 +17,13 @@ declare namespace API.OAuth {
     avatar: string;
     description: string;
     homepage: string;
-  }
+  };
 
   type OAuthPermissionDTO = API.BaseDTO & {
     applicationId: string;
     userId: string;
     permissions: string[];
-  }
+  };
   type OAuthPermissionQuery = API.PaginationQuery & {
     applicationId: string;
     userId: string;

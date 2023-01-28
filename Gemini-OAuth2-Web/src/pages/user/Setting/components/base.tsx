@@ -58,7 +58,7 @@ const BaseView: React.FC = () => {
         initialState?.fetchUserInfo?.().then((userInfo: API.User.UserDTO) => {
           setInitialState((s: any) => ({
             ...s,
-            currentUser: userInfo
+            currentUser: userInfo,
           }));
         });
       })

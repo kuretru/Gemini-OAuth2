@@ -55,7 +55,11 @@ const Settings: React.FC = () => {
   }, [dom.current]);
 
   const getMenu = () => {
-    return Object.keys(menuMap).map((item) => <Item key={item} disabled={item != 'base'}>{menuMap[item]}</Item>);
+    return Object.keys(menuMap).map((item) => (
+      <Item key={item} disabled={item != 'base'}>
+        {menuMap[item]}
+      </Item>
+    ));
   };
 
   const renderChildren = () => {

@@ -7,7 +7,9 @@ async function isApproved(record: API.OAuth2.OAuth2ApproveQuery): Promise<API.Ap
   });
 }
 
-async function approve(record: API.OAuth2.OAuth2ApproveRequestDTO,): Promise<API.ApiResponse<string>> {
+async function approve(
+  record: API.OAuth2.OAuth2ApproveRequestDTO,
+): Promise<API.ApiResponse<string>> {
   return request('/api/oauth2/approve', {
     method: 'post',
     data: record,

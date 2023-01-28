@@ -7,7 +7,7 @@ declare namespace API.OAuth2 {
     applicationId: string;
     userId: string;
     scope: string;
-  }
+  };
 
   type OAuth2ApproveRequestDTO = OAuth2ApproveQuery & {
     action: string;

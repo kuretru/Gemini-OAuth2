@@ -12,14 +12,19 @@ async function getInformation(id: string): Promise<API.ApiResponse<API.User.User
   });
 }
 
-async function updateInformation(id: string, record: API.User.UserInformationDTO): Promise<API.ApiResponse<API.User.UserInformationDTO>> {
+async function updateInformation(
+  id: string,
+  record: API.User.UserInformationDTO,
+): Promise<API.ApiResponse<API.User.UserInformationDTO>> {
   return request<API.ApiResponse<API.User.UserInformationDTO>>(`/api/users/${id}/information`, {
     method: 'put',
     data: record,
   });
 }
 
-async function login(record: API.User.UserLoginQuery,): Promise<API.ApiResponse<API.User.UserLoginDTO>> {
+async function login(
+  record: API.User.UserLoginQuery,
+): Promise<API.ApiResponse<API.User.UserLoginDTO>> {
   return request<API.ApiResponse<API.User.UserLoginDTO>>(`/api/users/login`, {
     method: 'post',
     data: record,

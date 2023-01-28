@@ -88,7 +88,7 @@ class OAuthApprove extends React.Component<Record<string, never>, OAuthApproveSt
   autoApprove = async () => {
     if (this.requestParams.reapprove) {
       message.info('需要重新授权');
-      console.log("自动授权失败：强制重新授权");
+      console.log('自动授权失败：强制重新授权');
       return;
     }
     const params: API.OAuth2.OAuth2ApproveQuery = {
@@ -103,7 +103,7 @@ class OAuthApprove extends React.Component<Record<string, never>, OAuthApproveSt
         window.location.href = response.data;
       })
       .catch(() => {
-        console.log("自动授权失败：用户尚未授权");
+        console.log('自动授权失败：用户尚未授权');
       });
   };
 
@@ -121,10 +121,7 @@ class OAuthApprove extends React.Component<Record<string, never>, OAuthApproveSt
   };
 
   actionbutton = [
-    <Button
-      key="reject"
-      icon={<CloseCircleOutlined />}
-      onClick={() => this.userApprove('reject')}>
+    <Button key="reject" icon={<CloseCircleOutlined />} onClick={() => this.userApprove('reject')}>
       拒绝
     </Button>,
     <Button

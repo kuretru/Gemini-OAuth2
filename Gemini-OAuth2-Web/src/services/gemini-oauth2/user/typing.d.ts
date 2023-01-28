@@ -20,7 +20,7 @@ declare namespace API.User {
   type UserVO = API.BaseDTO & {
     nickname: string;
     avatar: string;
-  }
+  };
 
   type UserLoginDTO = {
     userId: string;
@@ -38,5 +38,5 @@ declare namespace API.User {
   type UserInformationDTO = {
     nickname: string;
     avatar: string;
-  }
+  };
 }
