@@ -34,4 +34,9 @@ declare namespace API.User {
     password: string;
     captcha?: string;
   };
+
+  type UserInformationDTO = {
+    nickname: string;
+    avatar: string;
+  }
 }
