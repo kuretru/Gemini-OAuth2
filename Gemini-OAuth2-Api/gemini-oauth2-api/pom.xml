@@ -18,7 +18,7 @@
 
     <groupId>com.kuretru.web</groupId>
     <artifactId>gemini-oauth2-api</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.2.0</version>
     <name>gemini-oauth2-api</name>
     <description>双子身份验证中心-后端API</description>
 
