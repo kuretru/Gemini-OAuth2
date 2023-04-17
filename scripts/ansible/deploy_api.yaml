@@ -1,0 +1,20 @@
+---
+- hosts: gemini
+  gather_facts: false
+  remote_user: root
+  vars:
+    root_path: /home/nginx/oauth2.i5zhen.com/api
+    version: 0.2.0
+  tasks:
+  - name: deploy
+    copy: 
+      src: "../../Gemini-OAuth2-Api/gemini-oauth2-api/target/gemini-oauth2-api-{{ version }}.jar"
+      dest: "{{ root_path }}/gemini-oauth2-api-{{ version }}.jar"
+      owner: nginx
+      group: nginx
+      mode: 0755
+      backup: yes
+  - name: restart service
+    ansible.builtin.systemd: 
+      state: restarted
+      name: gemini
