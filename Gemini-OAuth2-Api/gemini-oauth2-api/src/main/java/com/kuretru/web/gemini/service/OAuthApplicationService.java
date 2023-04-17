@@ -3,11 +3,30 @@ package com.kuretru.web.gemini.service;
 import com.kuretru.microservices.web.service.BaseService;
 import com.kuretru.web.gemini.entity.query.OAuthApplicationQuery;
 import com.kuretru.web.gemini.entity.transfer.OAuthApplicationDTO;
+import com.kuretru.web.gemini.entity.view.OAuthApplicationSecretVO;
+
+import java.util.UUID;
 
 /**
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 public interface OAuthApplicationService extends BaseService<OAuthApplicationDTO, OAuthApplicationQuery> {
+
+    /**
+     * 查看应用密钥
+     *
+     * @param applicationId 应用ID
+     * @return 应用密钥实体
+     */
+    OAuthApplicationSecretVO getSecret(UUID applicationId);
+
+    /**
+     * 生成新的应用密钥
+     *
+     * @param applicationId 应用ID
+     * @return 应用密钥实体
+     */
+    OAuthApplicationSecretVO generateSecret(UUID applicationId);
 
     /**
      * 根据ClientId查询一条记录
