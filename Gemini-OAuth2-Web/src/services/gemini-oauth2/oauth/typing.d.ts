@@ -18,6 +18,11 @@ declare namespace API.OAuth {
     description: string;
     homepage: string;
   };
+  type OAuthApplicationSecretVO = API.BaseDTO & {
+    clientId: string;
+    clientSecret: string;
+    secretCreateTime: string;
+  };
 
   type OAuthPermissionDTO = API.BaseDTO & {
     applicationId: string;
