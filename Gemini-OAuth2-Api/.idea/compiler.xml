@@ -46,14 +46,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="api-common-utils" target="17" />
-      <module name="galaxy-authentication" target="17" />
-      <module name="galaxy-common" target="17" />
-      <module name="galaxy-oauth2-common" target="17" />
-      <module name="galaxy-oauth2-server" target="17" />
-      <module name="galaxy-web" target="17" />
       <module name="gemini-oatuh2-api" target="17" />
-      <module name="gemini-oauth2-api" target="17" />
-      <module name="gemini-oauth2-parent" target="1.5" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

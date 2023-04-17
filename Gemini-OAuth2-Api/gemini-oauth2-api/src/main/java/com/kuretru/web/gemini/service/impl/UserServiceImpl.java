@@ -12,14 +12,13 @@ import com.kuretru.microservices.web.exception.ServiceException;
 import com.kuretru.microservices.web.service.impl.BaseServiceImpl;
 import com.kuretru.web.gemini.constant.RoleConstants;
 import com.kuretru.web.gemini.entity.data.UserDO;
+import com.kuretru.web.gemini.entity.mapper.UserEntityMapper;
 import com.kuretru.web.gemini.entity.query.UserLoginQuery;
 import com.kuretru.web.gemini.entity.query.UserQuery;
 import com.kuretru.web.gemini.entity.transfer.UserDTO;
 import com.kuretru.web.gemini.entity.transfer.UserInformationDTO;
 import com.kuretru.web.gemini.mapper.UserMapper;
 import com.kuretru.web.gemini.service.UserService;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -113,27 +112,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO
             result.add(RoleConstants.ADMIN);
         }
         return result;
-    }
-
-    @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-    interface UserEntityMapper extends BaseServiceImpl.BaseEntityMapper<UserDO, UserDTO> {
-
-        /**
-         * 用户DO转用户基本信息DTO
-         *
-         * @param record 用户DO
-         * @return 用户基本信息DTO
-         */
-        UserInformationDTO doToInformationDto(UserDO record);
-
-        /**
-         * 用户基本信息DTO转用户DO
-         *
-         * @param record 用户基本信息DTO
-         * @return 用户DO
-         */
-        UserDO informationDtoToDo(UserInformationDTO record);
-
     }
 
 }

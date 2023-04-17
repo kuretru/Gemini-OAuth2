@@ -9,13 +9,12 @@ import com.kuretru.microservices.web.exception.ServiceException;
 import com.kuretru.microservices.web.service.impl.BaseServiceImpl;
 import com.kuretru.web.gemini.entity.business.OAuthPermissionBO;
 import com.kuretru.web.gemini.entity.data.OAuthPermissionDO;
+import com.kuretru.web.gemini.entity.mapper.OAuthPermissionEntityMapper;
 import com.kuretru.web.gemini.entity.query.OAuthPermissionQuery;
 import com.kuretru.web.gemini.entity.transfer.OAuthPermissionDTO;
 import com.kuretru.web.gemini.entity.view.OAuthPermissionVO;
 import com.kuretru.web.gemini.mapper.OAuthPermissionMapper;
 import com.kuretru.web.gemini.service.OAuthPermissionService;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,38 +57,6 @@ public class OAuthPermissionServiceImpl extends BaseServiceImpl<OAuthPermissionM
         page = mapper.listBo(page, queryWrapper);
         List<OAuthPermissionVO> records = ((OAuthPermissionEntityMapper)entityMapper).boToVo(page.getRecords());
         return new PaginationResponse<>(records, page.getCurrent(), page.getSize(), page.getTotal());
-    }
-
-    @Mapper(componentModel = "spring")
-    interface OAuthPermissionEntityMapper extends BaseServiceImpl.BaseEntityMapper<OAuthPermissionDO, OAuthPermissionDTO> {
-
-        @Override
-        @Mapping(source = "uuid", target = "id")
-        @Mapping(target = "permissions", expression = "java( com.kuretru.microservices.common.utils.StringUtils.stringToSet(record.getPermissions(), com.kuretru.web.gemini.service.impl.OAuthPermissionServiceImpl.PERMISSIONS_SEPARATOR) )")
-        OAuthPermissionDTO doToDto(OAuthPermissionDO record);
-
-        @Override
-        @Mapping(source = "id", target = "uuid")
-        @Mapping(target = "id", ignore = true)
-        @Mapping(target = "createTime", ignore = true)
-        @Mapping(target = "updateTime", ignore = true)
-        @Mapping(target = "permissions", expression = "java( com.kuretru.microservices.common.utils.StringUtils.collectionToString(record.getPermissions(), com.kuretru.web.gemini.service.impl.OAuthPermissionServiceImpl.PERMISSIONS_SEPARATOR) )")
-        OAuthPermissionDO dtoToDo(OAuthPermissionDTO record);
-
-        @Mapping(source = "applicationId", target = "application.id")
-        @Mapping(source = "applicationName", target = "application.name")
-        @Mapping(source = "applicationAvatar", target = "application.avatar")
-        @Mapping(source = "applicationDescription", target = "application.description")
-        @Mapping(source = "applicationHomepage", target = "application.homepage")
-        @Mapping(source = "userId", target = "user.id")
-        @Mapping(source = "userNickname", target = "user.nickname")
-        @Mapping(source = "userAvatar", target = "user.avatar")
-        @Mapping(source = "uuid", target = "id")
-        @Mapping(target = "permissions", expression = "java( com.kuretru.microservices.common.utils.StringUtils.stringToSet(record.getPermissions(), com.kuretru.web.gemini.service.impl.OAuthPermissionServiceImpl.PERMISSIONS_SEPARATOR) )")
-        OAuthPermissionVO boToVo(OAuthPermissionBO record);
-
-        List<OAuthPermissionVO> boToVo(List<OAuthPermissionBO> records);
-
     }
 
 }
