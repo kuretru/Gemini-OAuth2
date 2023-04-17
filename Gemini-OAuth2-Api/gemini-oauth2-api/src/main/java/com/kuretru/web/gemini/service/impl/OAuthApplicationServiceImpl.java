@@ -16,7 +16,9 @@ import org.springframework.util.StringUtils;
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @Service
-public class OAuthApplicationServiceImpl extends BaseServiceImpl<OAuthApplicationMapper, OAuthApplicationDO, OAuthApplicationDTO, OAuthApplicationQuery> implements OAuthApplicationService {
+public class OAuthApplicationServiceImpl
+        extends BaseServiceImpl<OAuthApplicationMapper, OAuthApplicationDO, OAuthApplicationDTO, OAuthApplicationQuery>
+        implements OAuthApplicationService {
 
     @Autowired
     public OAuthApplicationServiceImpl(OAuthApplicationMapper mapper, OAuthApplicationEntityMapper entityMapper) {

@@ -25,7 +25,9 @@ import java.util.UUID;
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @Service
-public class OAuthPermissionServiceImpl extends BaseServiceImpl<OAuthPermissionMapper, OAuthPermissionDO, OAuthPermissionDTO, OAuthPermissionQuery> implements OAuthPermissionService {
+public class OAuthPermissionServiceImpl
+        extends BaseServiceImpl<OAuthPermissionMapper, OAuthPermissionDO, OAuthPermissionDTO, OAuthPermissionQuery>
+        implements OAuthPermissionService {
 
     public static final String PERMISSIONS_SEPARATOR = ",";
 

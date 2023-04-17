@@ -32,7 +32,9 @@ import java.util.UUID;
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @Service
-public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserDTO, UserQuery> implements UserService {
+public class UserServiceImpl
+        extends BaseServiceImpl<UserMapper, UserDO, UserDTO, UserQuery>
+        implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final AccessTokenManager accessTokenManager;
