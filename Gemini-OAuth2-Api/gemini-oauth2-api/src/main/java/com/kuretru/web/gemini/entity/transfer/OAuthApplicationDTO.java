@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -18,23 +19,23 @@ import javax.validation.constraints.Size;
 @ToString(callSuper = true)
 public class OAuthApplicationDTO extends BaseDTO {
 
-    @NotNull
+    @NotEmpty
     @Size(max = 16)
     private String name;
 
-    @NotNull
+    @NotEmpty
     @Size(max = 128)
     private String avatar;
 
-    @NotNull
+    @NotEmpty
     @Size(max = 128)
     private String description;
 
-    @NotNull
+    @NotEmpty
     @Size(max = 64)
     private String homepage;
 
-    @NotNull
+    @NotEmpty
     @Size(max = 64)
     private String callback;
 

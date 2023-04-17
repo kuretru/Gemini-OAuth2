@@ -20,10 +20,10 @@ import java.util.UUID;
 @ToString(callSuper = true)
 public class OAuthPermissionDTO extends BaseDTO {
 
-    @NotNull
+    @NotEmpty
     private UUID applicationId;
 
-    @NotNull
+    @NotEmpty
     private UUID userId;
 
     @NotEmpty

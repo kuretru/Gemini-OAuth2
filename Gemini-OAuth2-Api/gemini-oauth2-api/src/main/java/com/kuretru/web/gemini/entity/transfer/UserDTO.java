@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -18,16 +19,16 @@ import javax.validation.constraints.NotNull;
 @ToString(callSuper = true)
 public class UserDTO extends BaseDTO {
 
-    @NotNull
+    @NotEmpty
     private String username;
 
-    @NotNull
+    @NotEmpty
     private String nickname;
 
-    @NotNull
+    @NotEmpty
     private String avatar;
 
-    @NotNull
+    @NotEmpty
     @JsonProperty("isAdmin")
     private Boolean admin;
 
