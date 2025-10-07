@@ -1,45 +1,131 @@
 name: CI
-on: [ push, pull_request ]
+on: [ push, pull_request, workflow_dispatch ]
 jobs:
   backend:
     name: backend
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      -
+        uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Set up JDK 17
+      -
+        name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
           cache: 'maven'
-      - name: Build Gemini OAuth Parent
+      -
+        name: Build Gemini OAuth Parent
         run: mvn --batch-mode --update-snapshots install
         working-directory: Gemini-OAuth2-Api/
+      -
+        name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend
+          path: Gemini-OAuth2-Api/gemini-oauth2-api/target/*.jar
+          retention-days: 7
   frontend:
     name: frontend
     runs-on: ubuntu-latest
     env:
       working-directory: Gemini-OAuth2-Web/
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js 18
+      -
+        uses: actions/checkout@v4
+      -
+        name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          # cache: 'yarn'
-          # cache-dependency-path: 'Gemini-OAuth2-Web/yarn.lock'
-      - name: Dependency
-        # run: yarn install --immutable
+          cache: 'yarn'
+          cache-dependency-path: 'Gemini-OAuth2-Web/yarn.lock'
+      -
+        name: Dependency
         run: yarn install
         working-directory: ${{env.working-directory}}
-      - name: Lint
+      -
+        name: Lint
         run: yarn lint
         working-directory: ${{env.working-directory}}
-      # - name: Test
+      # -
+      #   name: Test
       #   run: yarn test
       #   working-directory: ${{env.working-directory}}
-      - name: Build
+      -
+        name: Build
         run: yarn build
         working-directory: ${{env.working-directory}}
+      -
+        name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend
+          path: Gemini-OAuth2-Web/dist/
+          retention-days: 7
+  docker:
+    name: docker
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:  
+      -
+        uses: actions/checkout@v4
+      -
+        name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: scripts/docker/
+      -
+        name: Compress frontend artifact
+        uses: a7ul/tar-action@v1.1.0
+        with:
+          command: c
+          cwd: scripts/docker/frontend/
+          files: .
+          outPath: scripts/docker/frontend.tar.gz
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Login to GitHub Packages
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/kuretru/gemini-oauth2
+      -
+        name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: scripts/docker/
+          platforms: linux/amd64,linux/arm64
+          push: true
+          provenance: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+  purge-images:
+    name: purge images
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Purge untagged docker images
+        uses: Chizkiyahu/delete-untagged-ghcr-action@v2
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          repository: ${{ github.repository }}
+          repository_owner: ${{ github.repository_owner }}
+          package_name: gemini-oauth2
+          untagged_only: true
+          except_untagged_multiplatform: true
+          owner_type: user
