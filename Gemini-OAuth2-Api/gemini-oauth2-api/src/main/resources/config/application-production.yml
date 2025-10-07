@@ -2,3 +2,6 @@ spring:
   config:
     activate:
       on-profile: production
+  web:
+    resources:
+      static-locations: file:/web
