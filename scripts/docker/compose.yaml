@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  gemini-oauth2:
+    image: ghcr.io/kuretru/gemini-oauth2:main
+    container_name: gemini-oauth2
+    hostname: gemini-oauth2
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    user: docker:docker
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_HOSTNAME:
+      MYSQL_PORT:
+      MYSQL_USERNAME:
+      MYSQL_PASSWORD:
+      MYSQL_SCHEMA:
+      REDIS_HOST:
+      REDIS_PORT:
+      REDIS_PASSWORD:
+      GEMINI_APPLICATION_ID:
+      GEMINI_APPLICATION_SECRET:
+    network_mode: host
