@@ -1,7 +1,5 @@
 package com.kuretru.web.gemini.entity.view;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.kuretru.microservices.common.utils.InstantUtils;
 import com.kuretru.microservices.web.entity.transfer.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +19,6 @@ public class OAuthApplicationSecretVO extends BaseDTO {
 
     private String clientSecret;
 
-    @JsonFormat(pattern = InstantUtils.DEFAULT_DATE_FORMAT, timezone = InstantUtils.DEFAULT_ZONE)
     private Instant secretCreateTime;
 
 }
