@@ -23,7 +23,7 @@ import java.util.UUID;
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @RestController
-@RequestMapping("/oauth/permissions")
+@RequestMapping("/api/oauth/permissions")
 @RequireAuthorization
 public class OAuthPermissionController extends BaseController {
 

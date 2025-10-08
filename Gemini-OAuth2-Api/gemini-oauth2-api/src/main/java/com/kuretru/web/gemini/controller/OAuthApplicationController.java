@@ -17,7 +17,7 @@ import java.util.UUID;
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @RestController
-@RequestMapping("/oauth/applications")
+@RequestMapping("/api/oauth/applications")
 @RequireAuthorization(hasRole = "admin")
 public class OAuthApplicationController extends BaseRestController<OAuthApplicationService, OAuthApplicationDTO, OAuthApplicationQuery> {
 
