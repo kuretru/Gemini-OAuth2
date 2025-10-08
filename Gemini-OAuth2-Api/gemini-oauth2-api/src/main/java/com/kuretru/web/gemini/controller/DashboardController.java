@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @RestController
-@RequestMapping("/dashboard")
+@RequestMapping("/api/dashboard")
 @RequireAuthorization(hasRole = "admin")
 public class DashboardController extends BaseController {
 
