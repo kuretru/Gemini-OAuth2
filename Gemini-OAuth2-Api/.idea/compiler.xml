@@ -15,9 +15,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/projectlombok/lombok/1.18.26/lombok-1.18.26.jar" />
-          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/mapstruct/mapstruct-processor/1.5.3.Final/mapstruct-processor-1.5.3.Final.jar" />
-          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/mapstruct/mapstruct/1.5.3.Final/mapstruct-1.5.3.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.6.0/mapstruct-processor-1.6.0.jar" />
         </processorPath>
         <module name="galaxy-web" />
       </profile>
@@ -26,9 +25,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/projectlombok/lombok/1.18.26/lombok-1.18.26.jar" />
-          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/mapstruct/mapstruct-processor/1.5.3.Final/mapstruct-processor-1.5.3.Final.jar" />
-          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/mapstruct/mapstruct/1.5.3.Final/mapstruct-1.5.3.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.6.0/mapstruct-processor-1.6.0.jar" />
         </processorPath>
         <module name="gemini-oauth2-api" />
       </profile>
@@ -37,8 +35,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/projectlombok/lombok/1.18.26/lombok-1.18.26.jar" />
-          <entry name="$PROJECT_DIR$/../../../Repository/Maven/org/springframework/boot/spring-boot-configuration-processor/2.7.10/spring-boot-configuration-processor-2.7.10.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18.jar" />
         </processorPath>
         <module name="galaxy-authentication" />
         <module name="galaxy-oauth2-server" />

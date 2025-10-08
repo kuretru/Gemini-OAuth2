@@ -23,7 +23,7 @@ import java.io.IOException;
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @RestController
-@RequestMapping("/api/oauth2")
+@RequestMapping("/oauth2")
 public class OAuth2ServerController extends BaseController {
 
     private final OAuth2ServerManager manager;

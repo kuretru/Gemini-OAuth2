@@ -27,7 +27,7 @@ import java.util.UUID;
  * @author 呉真(kuretru) <kuretru@gmail.com>
  */
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController extends BaseController {
 
     private final UserService service;

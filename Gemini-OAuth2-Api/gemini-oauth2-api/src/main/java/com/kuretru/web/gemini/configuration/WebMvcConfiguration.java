@@ -23,8 +23,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/users/login")
-                .excludePathPatterns("/users/oauth2");
+                .excludePathPatterns("/api/users/login")
+                .excludePathPatterns("/api/users/oauth2");
     }
 
 }
