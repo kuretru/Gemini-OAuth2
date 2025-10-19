@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 @Component
 @WebFilter(urlPatterns = {
-        "/api/oauth2",
+        "/oauth2",
 }, filterName = "RequestParamSnakeCaseToCamelCaseFilter")
 public class RequestParamSnakeCaseToCamelCaseFilter implements Filter {
 
