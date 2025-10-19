@@ -5,3 +5,7 @@ spring:
   web:
     resources:
       static-locations: file:/web
+galaxy:
+  oauth2:
+    server:
+      front-end-url: https://oauth2.i5zhen.com

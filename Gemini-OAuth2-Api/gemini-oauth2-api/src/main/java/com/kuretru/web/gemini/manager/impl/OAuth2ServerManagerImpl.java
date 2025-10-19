@@ -33,7 +33,7 @@ import java.util.Set;
 @Service
 public class OAuth2ServerManagerImpl implements OAuth2ServerManager {
 
-    private static final String APPROVE_URL = "/oauth/approve";
+    private static final String APPROVE_URL = "/#/oauth/approve";
 
     private final OAuth2ServerProperty property;
     private final OAuth2AccessTokenMemory accessTokenMemory;
