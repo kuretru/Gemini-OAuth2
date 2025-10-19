@@ -1,14 +1,20 @@
+function getQueryString() {
+  const hash = window.location.hash || '';
+  const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+  return queryString;
+}
+
 function getRequestParam(name: string) {
-  const search = decodeURIComponent(window.location.search).replace('?', '');
+  const queryString = getQueryString();
   const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`);
-  const result = search.match(reg);
+  const result = queryString.match(reg);
   return result != null ? result[2] : '';
 }
 
 function getRequestParams() {
   const result: Record<string, string> = {};
-  const search = decodeURIComponent(window.location.search).replace('?', '');
-  const pairs = search !== '' ? search.split('&') : [];
+  const queryString = getQueryString();
+  const pairs = queryString !== '' ? queryString.split('&') : [];
   pairs.forEach((item) => {
     if (item) {
       const pair = item.split('=');
